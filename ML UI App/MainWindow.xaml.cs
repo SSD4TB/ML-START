@@ -29,35 +29,22 @@ namespace WpfApp1
                 Close();
             }
         }
-
-        private void Button_Reg(object sender, RoutedEventArgs e)
-        {
-            Reg regwindow = new Reg();
-
-            if (regwindow.ShowDialog() == true)
-            {
-                MessageBox.Show("Процесс регистрации (логика будет написана позже)");
-            }
-            else
-            {
-                MessageBox.Show("no");
-            }
-        }
-        private void Button_Log(object sender, RoutedEventArgs e)
-        {
-            Log logwindow = new Log();
-
-            if (logwindow.ShowDialog() == true)
-            {
-                MessageBox.Show("Доступ разрешен");
-            }
-        }
         private void Button_DeleteDB(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Функция появится в одной из ближайших версий");
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Button_Connect(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Start(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Stop(object sender, RoutedEventArgs e)
         {
 
         }

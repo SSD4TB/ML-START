@@ -73,11 +73,13 @@ namespace CSLight
             foundOperation.BuyStockByPerson(timeCount, name, popularityMod);
             this.stocks += timeCount;
             foundOperation.SellStockToStack(popularityMod);
+            Thread.Sleep(1000);
         }
 
         public void ExchangeMoney(IFoundOperation foundOperation)
         {
             foundOperation.ExchangeMoney(name);
+            Thread.Sleep(1000);
         }
 
         public void SellStock(IFoundOperation foundOperation, IPopularityMod popularityMod)
@@ -85,6 +87,7 @@ namespace CSLight
             timeCount = random.Next(100);
             foundOperation.SellStockByPerson(timeCount, name, popularityMod);
             foundOperation.SellStockToStack(popularityMod);
+            Thread.Sleep(1000);
         }
     }
 
@@ -109,7 +112,7 @@ namespace CSLight
             {
                 Console.WriteLine("[ПОПУЛЯРНОСТЬ]: Нарушена целостность популярности");
             }
-
+            Thread.Sleep(1000);
             CheckPopularity();
 
         }

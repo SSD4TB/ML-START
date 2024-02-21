@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML generic", "ML generic\ML
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ML UI App", "ML UI App\ML UI App.csproj", "{7C81EBCD-D7F6-4651-A1C9-C802B68E7895}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerLibrary", "LoggerLibrary\LoggerLibrary.csproj", "{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoggerLibrary", "LoggerLibrary\LoggerLibrary.csproj", "{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -16,14 +16,13 @@ Global
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{72390616-21C8-4546-8196-7DDF514D9548}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72390616-21C8-4546-8196-7DDF514D9548}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72390616-21C8-4546-8196-7DDF514D9548}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72390616-21C8-4546-8196-7DDF514D9548}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7C81EBCD-D7F6-4651-A1C9-C802B68E7895}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7C81EBCD-D7F6-4651-A1C9-C802B68E7895}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C81EBCD-D7F6-4651-A1C9-C802B68E7895}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C81EBCD-D7F6-4651-A1C9-C802B68E7895}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF7E81C8-D245-4D1F-917D-28EC6E8A5833}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

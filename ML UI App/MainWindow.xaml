@@ -16,18 +16,22 @@
             <ColumnDefinition Width="23*"/>
         </Grid.ColumnDefinitions>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Text="знайка?" Height="29" Width="200" FontSize="22" FontFamily="Trebuchet MS"/>
-        <Button Content="Войти" HorizontalAlignment="Left" Margin="10,135,0,0" VerticalAlignment="Top" Width="40" Click="Button_Log" Height="17"/>
-        <Button Content="Регистрация" HorizontalAlignment="Left" Margin="55,143,0,0" VerticalAlignment="Top" Width="40" Click="Button_Reg"/>
-        <Button Content="Уничтожить жизнь" HorizontalAlignment="Left" Margin="10,161,0,0" VerticalAlignment="Top" Width="125" Click="Button_DeleteDB" RenderTransformOrigin="0.492,0.509" Height="20"/>
+        <Button Content="Ну клики меня)" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="107" Click="Button_DeleteDB" RenderTransformOrigin="0.492,0.509" Height="20"/>
         <Border BorderBrush="Black" BorderThickness="2,2,2,2" Grid.ColumnSpan="2" Margin="212,0,16,132">
             <StackPanel Margin="10">
-                <TextBlock Text="berta1"/>
-                <TextBlock Text="berta2"/>
-                <TextBlock Text="berta3"/>
+                <TextBlock Text="Шаг"/>
+                <TextBlock Text="Количество акций"/>
+                <TextBlock Text="Популярность"/>
+                <TextBlock Text=""/>
+                <TextBlock Text="Ход персонажа"/>
+                <TextBlock Text="Ход биржы"/>
+                <TextBlock Text="Ход (доп строка)"/>
             </StackPanel>
         </Border>
-        <Button Content="Подключиться" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Height="48" Width="107" Click="Button_Click"/>
+        <Button Name="connect" Content="Подключиться" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Height="48" Width="107" Click="Button_Connect"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Соединение" VerticalAlignment="Top" Width="107"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" Text="Здесь будет IP после подключения к серверу" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" Text="Когда-нибудь руки дойдут и тут будет инфа по клиент серверу" VerticalAlignment="Top"/>
+        <Button Content="Старт" HorizontalAlignment="Left" Margin="212,148,0,0" VerticalAlignment="Top" Width="164"/>
+        <Button Content="Стоп" HorizontalAlignment="Left" Margin="382,148,0,0" VerticalAlignment="Top" Width="164" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>
