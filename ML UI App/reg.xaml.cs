@@ -56,7 +56,6 @@ namespace WpfApp1
                         {
                             MessageBox.Show(@"Данные не записаны. Значение reader.HasRows != 0
                         Пользователь уже существует");
-                            this.DialogResult = false;
                         }
                         await reader.CloseAsync();
                     }
@@ -67,7 +66,6 @@ namespace WpfApp1
                         MessageBox.Show("Данные внесены. reader.HasRows = 0");
                         this.DialogResult = true;
                     }
-
 
                     await sqlConnection.CloseAsync();
                 }

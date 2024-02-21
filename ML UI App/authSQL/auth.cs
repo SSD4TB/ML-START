@@ -7,11 +7,6 @@ namespace WpfApp1
 {
     static class SecurityAuth
     {
-        public async static Task Registration(string username, string password)
-        {
-            
-        }
-
         public static string hashPassword(string password)
         {
             MD5 mD5 = MD5.Create();
