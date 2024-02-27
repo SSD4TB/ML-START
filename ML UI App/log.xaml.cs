@@ -29,16 +29,18 @@ namespace WpfApp1
         {
             string connectionString = "Server=localhost;Database=authWPF;Trusted_Connection=True;TrustServerCertificate=True";
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string queryString = $"SELECT password FROM userAuth WHERE userLogin='{this.UserLogin}';";
+            string queryString = $"SELECT password FROM userAuth WHERE userLogin=@userlogin;";
             string value;
 
-            if (this.UserLogin != "" && this.Password != "")
+            if (UserLogin != "" && Password != "")
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
                     await sqlConnection.OpenAsync();
 
                     SqlCommand command = new SqlCommand(queryString, sqlConnection);
+                    SqlParameter userParam = new SqlParameter("@userlogin", UserLogin);
+                    command.Parameters.Add(userParam);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
@@ -46,9 +48,9 @@ namespace WpfApp1
                         while (await reader.ReadAsync())
                         {
                             value = Convert.ToString(reader.GetValue(0));
-                            if (value == SecurityAuth.hashPassword(this.Password))
+                            if (value == SecurityAuth.hashPassword(Password))
                             {
-                                this.DialogResult = true;
+                                DialogResult = true;
                             }
                             else
                             {
@@ -66,19 +68,19 @@ namespace WpfApp1
             }
             else
             {
-                if (this.Password == "" && this.UserLogin == "")
+                if (Password == "" && UserLogin == "")
                 {
-                    MessageBox.Show("ты че данные не вводишь гнида");
+                    MessageBox.Show("???");
                 }
                 else
                 {
-                    if (this.UserLogin == "")
+                    if (UserLogin == "")
                     {
-                        MessageBox.Show("ты кто сука");
+                        MessageBox.Show("login");
                     }
-                    if (this.Password == "")
+                    if (Password == "")
                     {
-                        MessageBox.Show("где пароль?");
+                        MessageBox.Show("pass?");
                     }
                 }
             }
@@ -89,7 +91,7 @@ namespace WpfApp1
             Reg regwindow = new Reg();
             if (regwindow.ShowDialog() == true)
             {
-                this.DialogResult = true;
+                DialogResult = true;
             }
         }
         public string Password

@@ -29,16 +29,20 @@ namespace WpfApp1
         {
             string connectionString = "Server=localhost;Database=authWPF;Trusted_Connection=True;TrustServerCertificate=True";
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string insertString = $"INSERT INTO userAuth VALUES ('{this.UserLogin}', '{SecurityAuth.hashPassword(this.Password)}');";
-            string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin='{this.UserLogin}';";
+            string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
+            string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin;";
 
-            if (this.Password != "" && this.UserLogin != "")
+            SqlParameter userlog = new SqlParameter("@userlogin", UserLogin);
+            SqlParameter password = new SqlParameter("@password", SecurityAuth.hashPassword(Password));
+
+            if (Password != "" && UserLogin != "")
             {
                 using (SqlConnection sqlConnection = new SqlConnection(connectionString))
                 {
                     await sqlConnection.OpenAsync();
 
                     SqlCommand command = new SqlCommand(selectString, sqlConnection);
+                    command.Parameters.Add(userlog);
                     SqlDataReader reader = await command.ExecuteReaderAsync();
 
                     if (reader.HasRows)
@@ -48,23 +52,27 @@ namespace WpfApp1
                         {
                             await reader.CloseAsync();
                             SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                            insertCommand.Parameters.Add(userlog);
+                            insertCommand.Parameters.Add(password);
                             insertCommand.ExecuteNonQuery();
-                            MessageBox.Show("Данные успешнно внесены в базу. reader.HasRows != 0");
-                            this.DialogResult = true;
+                            MessageBox.Show("Данные успешнно внесены в базу.", "RegAccept", MessageBoxButton.OK, MessageBoxImage.Information);
+                            DialogResult = true;
                         }
                         else
                         {
-                            MessageBox.Show(@"Данные не записаны. Значение reader.HasRows != 0
-                        Пользователь уже существует");
+                            MessageBox.Show(@"Данные не записаны.
+                        Пользователь уже существует", "RegError", MessageBoxButton.OK ,MessageBoxImage.Error);
                         }
                         await reader.CloseAsync();
                     }
                     else
                     {
                         SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                        insertCommand.Parameters.Add(userlog);
+                        insertCommand.Parameters.Add(password);
                         insertCommand.ExecuteNonQuery();
-                        MessageBox.Show("Данные внесены. reader.HasRows = 0");
-                        this.DialogResult = true;
+                        MessageBox.Show("Данные успешнно внесены в базу.", "RegAccept", MessageBoxButton.OK, MessageBoxImage.Information);
+                        DialogResult = true;
                     }
 
                     await sqlConnection.CloseAsync();
@@ -72,7 +80,7 @@ namespace WpfApp1
             }
             else
             {
-                MessageBox.Show("проверь данные мне лень тебе говорить что не так");
+                MessageBox.Show("Не все данные введены", "RegError", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

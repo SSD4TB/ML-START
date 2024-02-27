@@ -12,8 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Collections;
 
-namespace WpfApp1
+namespace ML_TCP_Server
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,30 +24,27 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            Log logwindow = new Log();
-            if (logwindow.ShowDialog() == false)
+        }
+
+        ArrayList clients = new ArrayList(); // для listview
+        bool serverIsActive = false;
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            // open host
+
+            if (serverIsActive)
             {
-                Close();
+
+                serverIsActive = false;
+                buttonHost.Content = "Сервер отключен";
             }
-        }
-        private void Button_DeleteDB(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("скоро эта кнопка совершит величайший прикол =)");
-        }
+            else
+            {
 
-        private void Button_Connect(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Start(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Button_Stop(object sender, RoutedEventArgs e)
-        {
-
+                serverIsActive = true;
+                buttonHost.Content = "Сервер включён";
+            }
         }
     }
 }
