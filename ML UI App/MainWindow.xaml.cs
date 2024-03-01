@@ -23,11 +23,6 @@ namespace WpfApp1
         public MainWindow()
         {
             InitializeComponent();
-            Log logwindow = new Log();
-            if (logwindow.ShowDialog() == false)
-            {
-                Close();
-            }
         }
         private void Button_DeleteDB(object sender, RoutedEventArgs e)
         {
@@ -36,7 +31,11 @@ namespace WpfApp1
 
         private void Button_Connect(object sender, RoutedEventArgs e)
         {
-
+            Log logwindow = new Log();
+            if (logwindow.ShowDialog() == false)
+            {
+                Close();
+            }
         }
 
         private void Button_Start(object sender, RoutedEventArgs e)

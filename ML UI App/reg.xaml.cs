@@ -25,58 +25,11 @@ namespace WpfApp1
             InitializeComponent();
         }
 
-        private async void Button_Reg(object sender, RoutedEventArgs e)
+        private void Button_Reg(object sender, RoutedEventArgs e)
         {
-            string connectionString = "Server=localhost;Database=authWPF;Trusted_Connection=True;TrustServerCertificate=True";
-            //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
-            string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin;";
-
-            SqlParameter userlog = new SqlParameter("@userlogin", UserLogin);
-            SqlParameter password = new SqlParameter("@password", SecurityAuth.hashPassword(Password));
-
             if (Password != "" && UserLogin != "")
             {
-                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-                {
-                    await sqlConnection.OpenAsync();
-
-                    SqlCommand command = new SqlCommand(selectString, sqlConnection);
-                    command.Parameters.Add(userlog);
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        if (reader.GetInt32(0) == 0)
-                        {
-                            await reader.CloseAsync();
-                            SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
-                            insertCommand.Parameters.Add(userlog);
-                            insertCommand.Parameters.Add(password);
-                            insertCommand.ExecuteNonQuery();
-                            MessageBox.Show("Данные успешнно внесены в базу.", "RegAccept", MessageBoxButton.OK, MessageBoxImage.Information);
-                            DialogResult = true;
-                        }
-                        else
-                        {
-                            MessageBox.Show(@"Данные не записаны.
-                        Пользователь уже существует", "RegError", MessageBoxButton.OK ,MessageBoxImage.Error);
-                        }
-                        await reader.CloseAsync();
-                    }
-                    else
-                    {
-                        SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
-                        insertCommand.Parameters.Add(userlog);
-                        insertCommand.Parameters.Add(password);
-                        insertCommand.ExecuteNonQuery();
-                        MessageBox.Show("Данные успешнно внесены в базу.", "RegAccept", MessageBoxButton.OK, MessageBoxImage.Information);
-                        DialogResult = true;
-                    }
-
-                    await sqlConnection.CloseAsync();
-                }
+                
             }
             else
             {

@@ -25,46 +25,11 @@ namespace WpfApp1
             InitializeComponent();
         }
 
-        private async void Button_Log(object sender, RoutedEventArgs e)
+        private void Button_Log(object sender, RoutedEventArgs e)
         {
-            string connectionString = "Server=localhost;Database=authWPF;Trusted_Connection=True;TrustServerCertificate=True";
-            //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string queryString = $"SELECT password FROM userAuth WHERE userLogin=@userlogin;";
-            string value;
-
             if (UserLogin != "" && Password != "")
             {
-                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-                {
-                    await sqlConnection.OpenAsync();
-
-                    SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                    SqlParameter userParam = new SqlParameter("@userlogin", UserLogin);
-                    command.Parameters.Add(userParam);
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
-                    {
-                        while (await reader.ReadAsync())
-                        {
-                            value = Convert.ToString(reader.GetValue(0));
-                            if (value == SecurityAuth.hashPassword(Password))
-                            {
-                                DialogResult = true;
-                            }
-                            else
-                            {
-                                MessageBox.Show("Ошибка авторизации");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("Ошибка авторизации");
-                    }
-
-                    await sqlConnection.CloseAsync();
-                }
+                
             }
             else
             {
