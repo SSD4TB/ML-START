@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfApp1
+namespace ML_UI_App
 {
     /// <summary>
     /// Interaction logic for App.xaml

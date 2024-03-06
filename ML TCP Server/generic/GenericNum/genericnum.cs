@@ -1,9 +1,5 @@
-﻿using Serilog;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.WebSockets;
-using System.Reflection.Metadata.Ecma335;
+﻿using Generic.LogService;
+using Serilog;
 using static Serilog.Events.LogEventLevel;
 
 namespace Generic.Num

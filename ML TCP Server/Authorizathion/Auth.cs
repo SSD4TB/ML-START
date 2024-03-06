@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Data.Sql;
-using System.Security.Cryptography;
-using Microsoft.Data.SqlClient;
-using System.Net;
+﻿using Microsoft.Data.SqlClient;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 
-namespace TCPClientServer.Authorizathion
+namespace TCPServer.Authorizathion
 {
     internal class Auth
     {
+        #region ConnectionDBString
         private static readonly string connectionString = @"Data Source=D1232;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        #endregion
+
+        #region Authorization
         public static async Task Login(Socket sender, string username, string password)
         {
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
@@ -48,13 +46,8 @@ namespace TCPClientServer.Authorizathion
                 await sqlConnection.CloseAsync();
             }
         }
-
-        public static async Task SendToClientAsync(Socket socket, string message)
-        {
-            await socket.SendAsync(Encoding.UTF8.GetBytes(message));
-        }
         
-        public static async Task Reg(Socket sender, string username, string userpass)
+        public static async Task Registration(Socket sender, string username, string userpass)
         {
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
             string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
@@ -100,7 +93,13 @@ namespace TCPClientServer.Authorizathion
             await sqlConnection.CloseAsync();
 
         }
+        #endregion
 
+        #region AuthService
+        public static async Task SendToClientAsync(Socket socket, string message)
+        {
+            await socket.SendAsync(Encoding.UTF8.GetBytes(message));
+        }
         public static string ToHex(string defaultString)
         {
             MD5 mD5 = MD5.Create();
@@ -110,5 +109,6 @@ namespace TCPClientServer.Authorizathion
 
             return $"{Convert.ToHexString(hash)}";
         }
+        #endregion
     }
 }

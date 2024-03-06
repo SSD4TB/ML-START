@@ -1,9 +1,7 @@
-﻿using System;
-using System.Data;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using TCPClientServer.Authorizathion;
+using TCPServer.Authorizathion;
 
 namespace tcpServer
 {
@@ -46,7 +44,7 @@ namespace tcpServer
 
                 if (firstMessage == "auth" || firstMessage == "reg")
                 { 
-                    await SignInUp(listener, firstMessage);
+                    await Authorization(listener, firstMessage);
                 }
                 else if (firstMessage == "getcontent")
                 {
@@ -65,7 +63,7 @@ namespace tcpServer
             }
         }
 
-        static async Task SignInUp(Socket socket, string typeOperation)
+        static async Task Authorization(Socket socket, string typeOperation)
         {
             socket.Send(Encoding.UTF8.GetBytes("1"));
             string userlogin = Listener(socket);
@@ -76,7 +74,7 @@ namespace tcpServer
             {
                 await Auth.Login(socket, userlogin, password);
             }
-            else await Auth.Reg(socket, userlogin, password);
+            else await Auth.Registration(socket, userlogin, password);
         }
 
         static string Listener(Socket listener)

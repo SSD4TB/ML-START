@@ -1,51 +1,55 @@
+using System;
+using System.IO;
+using System.IO.Pipes;
 using System.Text.Json;
+using System.Threading.Tasks;
 
-namespace Generic.Config
+namespace ML_UI_App.Config
 {
     internal class Configurator
     {
-        public static async Task CreateFile()
+        static async Task CreateFile()
         {
-            FileStream fs = new FileStream("config.json", FileMode.OpenOrCreate);
-            Configuration conf = new Configuration(7, 5, 2048, 500);
-            await JsonSerializer.SerializeAsync<Configuration>(fs, conf);
+            FileStream filestream = new("config.json", FileMode.OpenOrCreate);
+            Configuration conf = new(7, 5, 2048, 500);
+            await JsonSerializer.SerializeAsync<Configuration>(filestream, conf);
             Console.WriteLine("Конфигурация восстановлена.");
-            fs.Close();
+            filestream.Close();
         }
 
         static async Task ReadFile()
         {
-            FileStream? fs;
+            FileStream? filestream;
 
             try
             {
-                fs = new FileStream("config.json", FileMode.Open);
+                filestream = new FileStream("config.json", FileMode.Open);
             }
             catch (Exception ex)
             {
                 await CreateFile();
-                fs = new FileStream("config.json", FileMode.Open);
+                filestream = new FileStream("config.json", FileMode.Open);
             }
             Configuration? config;
             try
             {
-                config = await JsonSerializer.DeserializeAsync<Configuration>(fs);
+                config = await JsonSerializer.DeserializeAsync<Configuration>(filestream);
             }
             catch (Exception ex)
             {
-                fs.Close();
+                filestream.Close();
                 await CreateFile();
-                fs = new FileStream("config.json", FileMode.Open);
-                config = await JsonSerializer.DeserializeAsync<Configuration>(fs);
+                filestream = new FileStream("config.json", FileMode.Open);
+                config = await JsonSerializer.DeserializeAsync<Configuration>(filestream);
 
             }
 
             Console.WriteLine($"N: {config?.N}  L: {config?.L}  Log: {config?.LogMaxSize}  Delay: {config?.Delay}");
-            fs.Close();
+            filestream.Close();
         }
     }
 
-    internal class Configuration
+    class Configuration
     {
         public Configuration(int N, int L, int logmaxsize, int delay)
         {
