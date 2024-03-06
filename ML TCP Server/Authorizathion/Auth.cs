@@ -17,16 +17,17 @@ namespace TCPClientServer.Authorizathion
         public static async Task Login(Socket sender, string username, string password)
         {
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string queryString = $"SELECT password FROM userAuth WHERE userLogin=@userlogin;";
-            string value;
+            string queryString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin AND password=@password;";
+            string? value;
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
             {
                 await sqlConnection.OpenAsync();
 
                 SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                SqlParameter userParam = new SqlParameter("@userlogin", username);
+                SqlParameter userParam = new SqlParameter("@userlogin", ToHex(username));
                 command.Parameters.Add(userParam);
+                SqlParameter userPass = new SqlParameter("@password", ToHex(password));
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
@@ -59,55 +60,52 @@ namespace TCPClientServer.Authorizathion
             string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
             string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin;";
 
-            SqlParameter userlog = new SqlParameter("@userlogin", username);
-            SqlParameter userlogin = new SqlParameter("@userlogin", username);
+            SqlParameter userlogin = new SqlParameter("@userlogin", ToHex(username));
             SqlParameter password = new SqlParameter("@password", ToHex(userpass));
 
-                using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            await sqlConnection.OpenAsync();
+
+            SqlCommand command = new SqlCommand(selectString, sqlConnection);
+            command.Parameters.Add(userlogin);
+            SqlDataReader reader = await command.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                await reader.ReadAsync();
+                if (reader.GetInt32(0) == 0)
                 {
-                    await sqlConnection.OpenAsync();
-
-                    SqlCommand command = new SqlCommand(selectString, sqlConnection);
-                    command.Parameters.Add(userlog);
-                    SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        if (reader.GetInt32(0) == 0)
-                        {
-                            await reader.CloseAsync();
-                            SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
-                            insertCommand.Parameters.Add(userlogin);
-                            insertCommand.Parameters.Add(password);
-                            insertCommand.ExecuteNonQuery();
-                            sender.Send(Encoding.UTF8.GetBytes("Данные внесены"));
-                        }
-                        else
-                        {
-                        sender.Send(Encoding.UTF8.GetBytes("Данные не внесены"));
-                        }
-                        await reader.CloseAsync();
-                    }
-                    else
-                    {
-                        SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
-                        insertCommand.Parameters.Add(userlog);
-                        insertCommand.Parameters.Add(password);
-                        insertCommand.ExecuteNonQuery();
-                        sender.Send(Encoding.UTF8.GetBytes("Данные внесены"));
-                    }
-
-                    await sqlConnection.CloseAsync();
+                    await reader.CloseAsync();
+                    SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                    insertCommand.Parameters.Add(userlogin);
+                    insertCommand.Parameters.Add(password);
+                    insertCommand.ExecuteNonQuery();
+                    sender.Send(Encoding.UTF8.GetBytes("Данные внесены"));
                 }
-            
+                else
+                {
+                    sender.Send(Encoding.UTF8.GetBytes("Данные не внесены"));
+                }
+                await reader.CloseAsync();
+            }
+            else
+            {
+                SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                insertCommand.Parameters.Add(userlogin);
+                insertCommand.Parameters.Add(password);
+                insertCommand.ExecuteNonQuery();
+                sender.Send(Encoding.UTF8.GetBytes("Данные внесены"));
+            }
+
+            await sqlConnection.CloseAsync();
+
         }
 
-        public static string ToHex(string password)
+        public static string ToHex(string defaultString)
         {
             MD5 mD5 = MD5.Create();
 
-            byte[] bytes = Encoding.ASCII.GetBytes(password);
+            byte[] bytes = Encoding.ASCII.GetBytes(defaultString);
             byte[] hash = mD5.ComputeHash(bytes);
 
             return $"{Convert.ToHexString(hash)}";
