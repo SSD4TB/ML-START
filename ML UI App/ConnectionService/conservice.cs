@@ -35,6 +35,11 @@ namespace ML_UI_App.ConnectionService
             return Listener(tcpClient);
         }
 
+        public static void SendConfiguration(int n, int l)
+        {
+            tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
+        }
+
         public static void GetHistory()
         {
             // 1

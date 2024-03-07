@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using Generic.Config;
 using TCPServer.Authorizathion;
 
 namespace tcpServer
@@ -43,6 +44,7 @@ namespace tcpServer
         static async Task Host(Socket listener)
         {
             Console.WriteLine($"Клиент {listener.RemoteEndPoint} подключился к серверу");
+            Configuration clientConfig = new();
 
             while (true)
             {
@@ -64,7 +66,11 @@ namespace tcpServer
                 }
                 else if (firstMessage == "config")
                 {
-                    // Приём N и L
+                    listener.Send(Encoding.UTF8.GetBytes("config"));
+                    var tempConfig = Listener(listener).Split();
+                    clientConfig.N = int.Parse(tempConfig[0]);
+                    clientConfig.L = int.Parse(tempConfig[1]);
+                    listener.Send(Encoding.UTF8.GetBytes("config"));
                 }
                 else
                 {

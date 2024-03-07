@@ -1,4 +1,5 @@
 ﻿using ML_UI_App.ConnectionService;
+using ML_UI_App.Config;
 using System.Windows;
 
 namespace ML_UI_App
@@ -29,6 +30,7 @@ namespace ML_UI_App
                     MessageBox.Show("Успешное подключение к серверу", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
                     IsConnect = true;
                     connectButton.Content = "Отключиться";
+                    // TODO: Вынести подключение в метод и добавить отправку конфигурации
                 }
                 else
                 {

@@ -15,6 +15,7 @@ namespace Generic.History
                 Error
                 );
 
+            Company company = new("Компания");
             Bank bank = new Bank();
             Person person = new Person("Коротышка");
             Person person1 = new Person("Незнайка");
@@ -31,7 +32,7 @@ namespace Generic.History
                 bank.SellStockToStack(stackPeoples);
                 Console.WriteLine($"=============={stackPeoples.popularity}==============");
             }
-            bank.SellAllStocks();
+            bank.SellAllStocks(company);
 
         }
 

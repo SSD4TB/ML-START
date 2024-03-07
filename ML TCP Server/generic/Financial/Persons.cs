@@ -36,10 +36,10 @@
             popularityMod.UpPopularity();
         }
 
-        public void SellAllStocks()
+        public void SellAllStocks(Company company)
         {
             this.stocksToSell = 0;
-            Console.WriteLine("2.000.000 акций компании были проданы.");
+            Console.WriteLine($"2.000.000 акций компании {company} были проданы.");
         }
     }
     #endregion
@@ -138,15 +138,16 @@
 
     }
 
-    //record class Company
-    //{
-    //    public string name;
+    record class Company
+    {
+        public string name;
 
-    //    public Company(string name)
-    //    {
-    //        this.name = name;
-    //    }
-    //}
+        public Company(string name)
+        {
+            this.name = name;
+            Console.WriteLine($"Компания {this.name} выходит на рынок.");
+        }
+    }
     #endregion
     #endregion
 }

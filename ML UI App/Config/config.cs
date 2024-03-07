@@ -1,8 +1,11 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Net.Sockets;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using ML_UI_App.ConnectionService
 
 namespace ML_UI_App.Config
 {
@@ -17,7 +20,7 @@ namespace ML_UI_App.Config
             filestream.Close();
         }
 
-        static async Task ReadFile()
+        public static async Task ReadFile(Socket socket)
         {
             FileStream? filestream;
 
@@ -43,8 +46,7 @@ namespace ML_UI_App.Config
                 config = await JsonSerializer.DeserializeAsync<Configuration>(filestream);
 
             }
-
-            Console.WriteLine($"N: {config?.N}  L: {config?.L}  Log: {config?.LogMaxSize}  Delay: {config?.Delay}");
+            ConService.SendConfiguration(config.N, config.L);
             filestream.Close();
         }
     }
