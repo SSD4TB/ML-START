@@ -24,7 +24,14 @@ namespace tcpServer
                 {
                     var tcpClient = await tcpSocket.AcceptAsync();
 
-                    await Host(tcpClient);
+                    try
+                    {
+                        Task.Run(async () => await Host(tcpClient));
+                    }
+                    catch (Exception ex)
+                    {
+                        continue;
+                    }
                 }
             }
             catch (Exception ex)
@@ -33,9 +40,8 @@ namespace tcpServer
             }
         }
 
-        static async Task Host(Socket tcpSocket)
+        static async Task Host(Socket listener)
         {
-            Socket listener = tcpSocket.Accept();
 
             while (true)
             {

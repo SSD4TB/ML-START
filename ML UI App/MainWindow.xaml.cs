@@ -1,17 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ML_UI_App.ConnectionService;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ML_UI_App
 {
@@ -40,12 +28,23 @@ namespace ML_UI_App
 
         private void Button_Start(object sender, RoutedEventArgs e)
         {
-
+            ConService.Connect();
+            MessageBox.Show("законекчено");
         }
 
         private void Button_Stop(object sender, RoutedEventArgs e)
         {
+            ConService.Disconnect();
+        }
 
+        private void testcon_Click(object sender, RoutedEventArgs e)
+        {
+            testTextBlock.Text = ConService.TestSendMessage();
+        }
+
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ConService.Disconnect();
         }
     }
 }

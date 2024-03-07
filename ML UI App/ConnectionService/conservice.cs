@@ -15,9 +15,24 @@ namespace ML_UI_App.ConnectionService
         // TODO: Реализовать подключение к серверу через конфигурацию/UI приложение
         private static readonly string _ip = "127.0.0.1";
         private static readonly int _port = 8080;
+        public static Socket tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
+        public static void Connect()
+        {
+            tcpClient.Connect(_ip, _port);
+        }
 
-        static string Listener(Socket listener)
+        public static string TestSendMessage()
+        {
+            tcpClient.Send(Encoding.UTF8.GetBytes("message"));
+            return Listener(tcpClient);
+        }
+
+        public static void GetHistory()
+        {
+
+        }
+        public static string Listener(Socket listener)
         {
             var buffer = new byte[256];
             var size = 0;
@@ -30,6 +45,11 @@ namespace ML_UI_App.ConnectionService
             } while (listener.Available > 0);
 
             return data.ToString();
+        }
+
+        public static void Disconnect()
+        {
+            tcpClient.Close();
         }
     }
 }
