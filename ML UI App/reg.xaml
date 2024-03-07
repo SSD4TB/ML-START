@@ -13,11 +13,13 @@
         </Grid.ColumnDefinitions>
         <TextBlock HorizontalAlignment="Center" Margin="0,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="MEGA GUTEN TAG" Height="29" Width="200" FontSize="22" FontFamily="Trebuchet MS"/>
         <PasswordBox Name="passBox" HorizontalAlignment="Left" Margin="195,155,0,0" VerticalAlignment="Top" Width="120"/>
-        <TextBox Name="textBoxLogin" HorizontalAlignment="Left" Margin="195,129,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="TextBox_TextChanged"/>
-        <TextBlock HorizontalAlignment="Left" Margin="80,130,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="2.197,0.574"><Run Language="ru-ru" Text="Имя пользователя"/></TextBlock>
-        <TextBlock HorizontalAlignment="Left" Margin="140,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="2.197,0.574"><Run Language="ru-ru" Text="Пароль"/></TextBlock>
+        <TextBox Name="textBoxLogin" HorizontalAlignment="Left" Margin="195,111,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="80,112,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="2.197,0.574"><Run Language="ru-ru" Text="Имя пользователя"/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="80,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="2.197,0.574"><Run Language="ru-ru" Text="Повторите пароль"/></TextBlock>
         <Button IsDefault="True" Content="Регистрация" HorizontalAlignment="Left" Margin="195,188,0,0" VerticalAlignment="Top" Width="120" Click="Button_Reg"/>
-        <Button IsCancel="True" Content="Отмена" HorizontalAlignment="Left" Margin="195,213,0,0" VerticalAlignment="Top" Width="120"/>
+        <Button IsCancel="True" Content="Назад" HorizontalAlignment="Left" Margin="195,213,0,0" VerticalAlignment="Top" Width="120"/>
+        <PasswordBox x:Name="passBoxTwo" HorizontalAlignment="Left" Margin="195,0,0,0" VerticalAlignment="Center" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="140,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" RenderTransformOrigin="2.197,0.574"><Run Language="ru-ru" Text="Пароль"/></TextBlock>
 
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ML_UI_App.ConnectionService;
+using System.Windows;
 
 namespace ML_UI_App
 {
@@ -16,36 +17,28 @@ namespace ML_UI_App
         {
             if (UserLogin != "" && Password != "")
             {
-                
-            }
-            else
-            {
-                if (Password == "" && UserLogin == "")
+                string answer = ConService.Authorization("auth", UserLogin, Password);
+                if (answer == "true")
                 {
-                    MessageBox.Show("???");
+                    DialogResult = true;
                 }
                 else
                 {
-                    if (UserLogin == "")
-                    {
-                        MessageBox.Show("login");
-                    }
-                    if (Password == "")
-                    {
-                        MessageBox.Show("pass?");
-                    }
+                    MessageBox.Show($"Ошибка авторизации.\nБолее подробная информация будет в следующей версии\n{answer}", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+            else
+            {
+                MessageBox.Show("Не все требуемые данные введены", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         private void Button_Reg(object sender, RoutedEventArgs e)
         {
-            Reg regwindow = new Reg();
-            if (regwindow.ShowDialog() == true)
-            {
-                DialogResult = true;
-            }
+            var regwindow = new Reg();
+            regwindow.ShowDialog();
         }
+        
         public string Password
         {
             get { return passBox.Password; }

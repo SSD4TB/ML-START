@@ -8,14 +8,14 @@ namespace TCPServer.Authorizathion
     internal class Auth
     {
         #region ConnectionDBString
-        private static readonly string connectionString = @"Data Source=D1232;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private static readonly string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""ML START"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         #endregion
 
         #region Authorization
         public static async Task Login(Socket sender, string username, string password)
         {
             //string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=authWPF;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-            string queryString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin AND password=@password;";
+            string queryString = $"SELECT password FROM userAuth WHERE userLogin=@userlogin;";
             string? value;
 
             using (SqlConnection sqlConnection = new SqlConnection(connectionString))
@@ -23,9 +23,9 @@ namespace TCPServer.Authorizathion
                 await sqlConnection.OpenAsync();
 
                 SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                SqlParameter userParam = new SqlParameter("@userlogin", ToHex(username));
+                SqlParameter userParam = new SqlParameter("@userlogin", username);
                 command.Parameters.Add(userParam);
-                SqlParameter userPass = new SqlParameter("@password", ToHex(password));
+
                 SqlDataReader reader = await command.ExecuteReaderAsync();
 
                 if (reader.HasRows)
@@ -53,7 +53,8 @@ namespace TCPServer.Authorizathion
             string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
             string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin;";
 
-            SqlParameter userlogin = new SqlParameter("@userlogin", ToHex(username));
+            SqlParameter userlogin = new SqlParameter("@userlogin", username);
+            SqlParameter userlog = new SqlParameter("@userlogin", username);
             SqlParameter password = new SqlParameter("@password", ToHex(userpass));
 
             SqlConnection sqlConnection = new SqlConnection(connectionString);
@@ -61,6 +62,7 @@ namespace TCPServer.Authorizathion
 
             SqlCommand command = new SqlCommand(selectString, sqlConnection);
             command.Parameters.Add(userlogin);
+
             SqlDataReader reader = await command.ExecuteReaderAsync();
 
             if (reader.HasRows)
@@ -70,14 +72,14 @@ namespace TCPServer.Authorizathion
                 {
                     await reader.CloseAsync();
                     SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
-                    insertCommand.Parameters.Add(userlogin);
+                    insertCommand.Parameters.Add(userlog);
                     insertCommand.Parameters.Add(password);
                     insertCommand.ExecuteNonQuery();
                     sender.Send(Encoding.UTF8.GetBytes("Данные внесены"));
                 }
                 else
                 {
-                    sender.Send(Encoding.UTF8.GetBytes("Данные не внесены"));
+                    sender.Send(Encoding.UTF8.GetBytes($"Пользователь с логином {username} существует"));
                 }
                 await reader.CloseAsync();
             }
@@ -102,10 +104,9 @@ namespace TCPServer.Authorizathion
         }
         public static string ToHex(string defaultString)
         {
-            MD5 mD5 = MD5.Create();
 
             byte[] bytes = Encoding.ASCII.GetBytes(defaultString);
-            byte[] hash = mD5.ComputeHash(bytes);
+            byte[] hash = MD5.HashData(bytes);
 
             return $"{Convert.ToHexString(hash)}";
         }

@@ -8,6 +8,8 @@ namespace ML_UI_App
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool IsLogin = false;
+        private bool IsConnect = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -19,27 +21,60 @@ namespace ML_UI_App
 
         private void Button_Connect(object sender, RoutedEventArgs e)
         {
-            Log logwindow = new Log();
-            if (logwindow.ShowDialog() == false)
+            if (IsLogin)
             {
-                Close();
+                if (!IsConnect)
+                {
+                    ConService.Connect();
+                    MessageBox.Show("Успешное подключение к серверу", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
+                    IsConnect = true;
+                    connectButton.Content = "Отключиться";
+                }
+                else
+                {
+                    ConService.Disconnect();
+                    MessageBox.Show("Отключено", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
+                    IsConnect = false;
+                    connectButton.Content = "Подключиться";
+                }
+            }
+            else
+            {
+                ConService.Connect();
+                Log logwindow = new();
+                if (logwindow.ShowDialog() == true)
+                {
+                    IsLogin = true;
+                    MessageBox.Show("Авторизация прошла успешно.\nСоединение с сервером установлено.", "auth", MessageBoxButton.OK, MessageBoxImage.Information);
+                    IsConnect = true;
+                    connectButton.Content = "Отключиться";
+                }
+                else
+                {
+                    ConService.Disconnect();
+                    MessageBox.Show("Ошибка авторизации.", "auth", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
         private void Button_Start(object sender, RoutedEventArgs e)
         {
             ConService.Connect();
-            MessageBox.Show("законекчено");
+            IsConnect = true;
         }
 
         private void Button_Stop(object sender, RoutedEventArgs e)
         {
             ConService.Disconnect();
+            IsConnect = false;
         }
 
         private void testcon_Click(object sender, RoutedEventArgs e)
         {
-            testTextBlock.Text = ConService.TestSendMessage();
+            if (IsConnect)
+            {
+                testTextBlock.Text = ConService.TestSendMessage();
+            }
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

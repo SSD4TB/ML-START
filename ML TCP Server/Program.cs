@@ -42,11 +42,12 @@ namespace tcpServer
 
         static async Task Host(Socket listener)
         {
+            Console.WriteLine($"Клиент {listener.RemoteEndPoint} подключился к серверу");
 
             while (true)
             {
                 string firstMessage = Listener(listener);
-                Console.WriteLine(firstMessage);
+                Console.WriteLine($"Клиент {listener.RemoteEndPoint} отправляет команду {firstMessage}");
 
                 if (firstMessage == "auth" || firstMessage == "reg")
                 { 
@@ -58,9 +59,12 @@ namespace tcpServer
                 }
                 else if (firstMessage == "close")
                 {
-                    listener.Send(Encoding.UTF8.GetBytes("close"));
+                    Console.WriteLine($"Клиент {listener.RemoteEndPoint} отключился от сервера");
                     listener.Shutdown(SocketShutdown.Both);
-                    listener.Close();
+                }
+                else if (firstMessage == "config")
+                {
+                    // Приём N и L
                 }
                 else
                 {

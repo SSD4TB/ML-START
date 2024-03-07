@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +16,7 @@ namespace ML_UI_App.ConnectionService
 
         public static void Connect()
         {
-            tcpClient.Connect(_ip, _port);
+            Task.Run(async() => await tcpClient.ConnectAsync(_ip, _port));
         }
 
         public static string TestSendMessage()
@@ -28,9 +25,19 @@ namespace ML_UI_App.ConnectionService
             return Listener(tcpClient);
         }
 
+        public static string Authorization(string operation, string user, string password)
+        {
+            tcpClient.Send(Encoding.UTF8.GetBytes(operation));
+            Listener(tcpClient);
+            tcpClient.Send(Encoding.UTF8.GetBytes(user));
+            Listener(tcpClient);
+            tcpClient.Send(Encoding.UTF8.GetBytes(password));
+            return Listener(tcpClient);
+        }
+
         public static void GetHistory()
         {
-
+            // 1
         }
         public static string Listener(Socket listener)
         {
@@ -49,7 +56,10 @@ namespace ML_UI_App.ConnectionService
 
         public static void Disconnect()
         {
+            tcpClient.Send(Encoding.UTF8.GetBytes("close"));
+            tcpClient.Shutdown(SocketShutdown.Both);
             tcpClient.Close();
+            tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         }
     }
 }

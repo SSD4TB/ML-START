@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using ML_UI_App.ConnectionService;
 
 namespace ML_UI_App
 {
@@ -15,24 +16,39 @@ namespace ML_UI_App
 
         private void Button_Reg(object sender, RoutedEventArgs e)
         {
-            if (Password != "" && UserLogin != "")
+            if (Password != "" && UserLogin != "" && Password == PasswordRepeat)
             {
-                
+                string answer = ConService.Authorization("reg", UserLogin, Password);
+                if (answer == "Данные внесены")
+                {
+                    DialogResult = true;
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка авторизации.\nБолее подробная информация будет в следующей версии\n{answer}", "Регистрация", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Не все данные введены", "RegError", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (Password != PasswordRepeat)
+                {
+                    MessageBox.Show("Пароли не совпадают", "Reg", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                else if (UserLogin == "" || Password == "")
+                {
+                    MessageBox.Show("Не все данные были введены", "Reg", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-        }
-
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-
         }
 
         public string Password
         {
             get { return passBox.Password; }
+        }
+
+        public string PasswordRepeat
+        {
+            get { return passBoxTwo.Password; }
         }
 
         public string UserLogin
