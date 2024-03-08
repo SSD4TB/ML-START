@@ -18,22 +18,17 @@
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Text="знайка?" Height="29" Width="200" FontSize="22" FontFamily="Trebuchet MS"/>
         <Button Content="Ну клики меня)" HorizontalAlignment="Left" Margin="10,138,0,0" VerticalAlignment="Top" Width="107" Click="Button_DeleteDB" RenderTransformOrigin="0.492,0.509" Height="20"/>
         <Border BorderBrush="Black" BorderThickness="2,2,2,2" Grid.ColumnSpan="2" Margin="212,0,16,132">
-            <StackPanel Margin="10">
-                <TextBlock Text="Шаг"/>
-                <TextBlock Text="Количество акций"/>
-                <TextBlock Text="Популярность"/>
-                <TextBlock Text=""/>
-                <TextBlock Text="Ход персонажа"/>
-                <TextBlock Text="Ход биржы"/>
-                <TextBlock Text="Ход (доп строка)"/>
-            </StackPanel>
+            <ListBox Name="StoryList">
+                
+            </ListBox>
+
         </Border>
         <Button Name="connectButton" Content="Подключиться" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Height="48" Width="107" Click="Button_Connect"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,56,0,0" TextWrapping="Wrap" Text="Соединение" VerticalAlignment="Top" Width="107"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,249,0,0" TextWrapping="Wrap" Text="Когда-нибудь руки дойдут и тут будет инфа по клиент серверу" VerticalAlignment="Top"/>
-        <Button Content="Старт" HorizontalAlignment="Left" Margin="212,148,0,0" VerticalAlignment="Top" Width="164" Click="Button_Start"/>
-        <Button Content="Стоп" HorizontalAlignment="Left" Margin="382,148,0,0" VerticalAlignment="Top" Width="164" Grid.ColumnSpan="2" Click="Button_Stop"/>
+        <Button x:Name="startButton" Content="Старт" HorizontalAlignment="Left" Margin="212,148,0,0" VerticalAlignment="Top" Width="164" Click="Button_Start"/>
+        <Button x:Name="stopButton" Content="Стоп" HorizontalAlignment="Left" Margin="382,148,0,0" VerticalAlignment="Top" Width="164" Grid.ColumnSpan="2" Click="Button_Stop"/>
         <TextBlock x:Name="testTextBlock" HorizontalAlignment="Left" Margin="50,181,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Width="109"/>
-        <Button x:Name="testcon" Content="TestConnect" HorizontalAlignment="Left" Margin="229,197,0,0" VerticalAlignment="Top" Width="92" Click="testcon_Click"/>
+        <Button x:Name="testcon" Content="TestConnect" HorizontalAlignment="Left" Margin="229,197,0,0" VerticalAlignment="Top" Width="92" Click="TestCon_Click"/>
     </Grid>
 </Window>

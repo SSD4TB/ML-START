@@ -1,6 +1,7 @@
 ﻿using ML_UI_App.ConnectionService;
 using ML_UI_App.Config;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace ML_UI_App
 {
@@ -56,24 +57,24 @@ namespace ML_UI_App
             }
         }
 
-        private void Button_Start(object sender, RoutedEventArgs e)
+        private async void Button_Start(object sender, RoutedEventArgs e)
         {
-            ConService.Connect();
-            IsConnect = true;
+            await ConService.GetHistory(StoryList);
         }
 
         private void Button_Stop(object sender, RoutedEventArgs e)
         {
-            ConService.Disconnect();
-            IsConnect = false;
+            ConService.StopHistory();
         }
 
-        private void testcon_Click(object sender, RoutedEventArgs e)
+        private void TestCon_Click(object sender, RoutedEventArgs e)
         {
-            if (IsConnect)
-            {
-                testTextBlock.Text = ConService.TestSendMessage();
-            }
+            //if (IsConnect)
+            //{
+            //    testTextBlock.Text = ConService.TestSendMessage();
+            //}
+
+            StoryList.Items.Add("kurwabober");
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)

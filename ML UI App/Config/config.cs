@@ -9,13 +9,13 @@ using ML_UI_App.ConnectionService;
 
 namespace ML_UI_App.Config
 {
-    internal class Configurator
+    public class Configurator
     {
         static async Task CreateFile()
         {
             FileStream filestream = new("config.json", FileMode.OpenOrCreate);
-            Configuration conf = new(7, 5, 2048, 500);
-            await JsonSerializer.SerializeAsync<Configuration>(filestream, conf);
+            ClientConfig conf = new(7, 5, 2048, 1000);
+            await JsonSerializer.SerializeAsync<ClientConfig>(filestream, conf);
             Console.WriteLine("Конфигурация восстановлена.");
             filestream.Close();
         }
@@ -33,36 +33,57 @@ namespace ML_UI_App.Config
                 await CreateFile();
                 filestream = new FileStream("config.json", FileMode.Open);
             }
-            Configuration? config;
+            ClientConfig? config;
             try
             {
-                config = await JsonSerializer.DeserializeAsync<Configuration>(filestream);
+                config = await JsonSerializer.DeserializeAsync<ClientConfig>(filestream);
             }
             catch (Exception ex)
             {
                 filestream.Close();
                 await CreateFile();
                 filestream = new FileStream("config.json", FileMode.Open);
-                config = await JsonSerializer.DeserializeAsync<Configuration>(filestream);
+                config = await JsonSerializer.DeserializeAsync<ClientConfig>(filestream);
 
             }
             ConService.SendConfiguration(config.N, config.L);
             filestream.Close();
         }
+
+        public static int ReadDelay()
+        {
+            FileStream? filestream;
+
+            try
+            {
+                filestream = new FileStream("config.json", FileMode.Open);
+            }
+            catch (Exception ex)
+            {
+                filestream = new FileStream("config.json", FileMode.Open);
+            }
+            ClientConfig? config;
+            try
+            {
+                config = JsonSerializer.Deserialize<ClientConfig>(filestream);
+            }
+            catch (Exception ex)
+            {
+                filestream.Close();
+                filestream = new FileStream("config.json", FileMode.Open);
+                config = JsonSerializer.Deserialize<ClientConfig>(filestream);
+
+            }
+            filestream.Close();
+            return config.Delay;
+        }
     }
 
-    class Configuration
+    public class ClientConfig(int N, int L, int logmaxsize, int delay)
     {
-        public Configuration(int N, int L, int logmaxsize, int delay)
-        {
-            this.N = N;
-            this.L = L;
-            LogMaxSize = logmaxsize;
-            Delay = delay;
-        }
-        public int N { get; }
-        public int L { get; set; }
-        public int LogMaxSize { get; set; }
-        public int Delay { get; set; }
+        public int N { get; } = N;
+        public int L { get; set; } = L;
+        public int LogMaxSize { get; set; } = logmaxsize;
+        public int Delay { get; set; } = delay;
     }
 }

@@ -1,6 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using System.Configuration;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using ML_UI_App.Config;
 
 namespace ML_UI_App.ConnectionService
 {
@@ -11,7 +14,8 @@ namespace ML_UI_App.ConnectionService
     {
         private static readonly string _ip = "127.0.0.1";
         private static readonly int _port = 8080;
-        public static Socket tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        public static Socket tcpClient = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static bool ContentFlag = false;
 
         public static void Connect()
         {
@@ -39,11 +43,40 @@ namespace ML_UI_App.ConnectionService
             tcpClient.Send(Encoding.UTF8.GetBytes("config"));
             Listener(tcpClient);
             tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
+            Listener(tcpClient);
         }
 
-        public static void GetHistory()
+        public static async Task GetHistory(ListBox listbox)
         {
-            // 1
+            ContentFlag = true;
+            string tempString;
+            tcpClient.Send(Encoding.UTF8.GetBytes("getcontent"));
+            Listener(tcpClient);
+            while (true)
+            {
+                if (ContentFlag)
+                {
+                    tcpClient.Send(Encoding.UTF8.GetBytes("start"));
+                    tempString = Listener(tcpClient);
+                    if(tempString.Split()[0] == "Компания")
+                    {
+                        listbox.Items.Clear();
+                    }
+                    listbox.Items.Add(tempString);
+                }
+                else
+                {
+                    tcpClient.Send(Encoding.UTF8.GetBytes("stop"));
+                    Listener(tcpClient);
+                    break;
+                }
+                await Task.Delay(Configurator.ReadDelay());
+            }
+        }
+
+        public static void StopHistory()
+        {
+            ContentFlag = false;
         }
         public static string Listener(Socket listener)
         {
