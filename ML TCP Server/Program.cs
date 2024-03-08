@@ -44,13 +44,13 @@ namespace tcpServer
 
         static async Task Host(Socket tcpConnect)
         {
-            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} подключился к серверу");
+            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} подключился к серверу.");
             Configuration clientConfig = new();
 
             while (true)
             {
                 string firstMessage = Listener(tcpConnect);
-                Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {firstMessage}");
+                Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {firstMessage}.");
 
                 if (firstMessage == "auth" || firstMessage == "reg")
                 { 
@@ -62,7 +62,7 @@ namespace tcpServer
                 }
                 else if (firstMessage == "close")
                 {
-                    Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отключился от сервера");
+                    Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отключился от сервера.");
                     tcpConnect.Shutdown(SocketShutdown.Both);
                 }
                 else if (firstMessage == "config")
@@ -94,7 +94,6 @@ namespace tcpServer
                 }
 
                 string firstMessage = Listener(socket);
-                Console.WriteLine(firstMessage);
 
                 if (firstMessage == "start")
                 {
@@ -109,6 +108,7 @@ namespace tcpServer
                 else if (firstMessage == "stop")
                 {
                     socket.Send(Encoding.UTF8.GetBytes("stop get content"));
+                    Console.WriteLine($"Клиент {socket.RemoteEndPoint} отправляет команду stop.");
                     break;
                 }
                 else
