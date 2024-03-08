@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 using Generic.Config;
+using Generic.History;
 using TCPServer.Authorizathion;
 
 namespace tcpServer
@@ -41,40 +42,78 @@ namespace tcpServer
             }
         }
 
-        static async Task Host(Socket listener)
+        static async Task Host(Socket tcpConnect)
         {
-            Console.WriteLine($"Клиент {listener.RemoteEndPoint} подключился к серверу");
+            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} подключился к серверу");
             Configuration clientConfig = new();
 
             while (true)
             {
-                string firstMessage = Listener(listener);
-                Console.WriteLine($"Клиент {listener.RemoteEndPoint} отправляет команду {firstMessage}");
+                string firstMessage = Listener(tcpConnect);
+                Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {firstMessage}");
 
                 if (firstMessage == "auth" || firstMessage == "reg")
                 { 
-                    await Authorization(listener, firstMessage);
+                    await Authorization(tcpConnect, firstMessage);
                 }
                 else if (firstMessage == "getcontent")
                 {
-                    // ml generic => wpfapp
+                    GetContent(tcpConnect, clientConfig.N, clientConfig.L);
                 }
                 else if (firstMessage == "close")
                 {
-                    Console.WriteLine($"Клиент {listener.RemoteEndPoint} отключился от сервера");
-                    listener.Shutdown(SocketShutdown.Both);
+                    Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отключился от сервера");
+                    tcpConnect.Shutdown(SocketShutdown.Both);
                 }
                 else if (firstMessage == "config")
                 {
-                    listener.Send(Encoding.UTF8.GetBytes("config"));
-                    var tempConfig = Listener(listener).Split();
+                    tcpConnect.Send(Encoding.UTF8.GetBytes("config"));
+                    var tempConfig = Listener(tcpConnect).Split();
                     clientConfig.N = int.Parse(tempConfig[0]);
                     clientConfig.L = int.Parse(tempConfig[1]);
-                    listener.Send(Encoding.UTF8.GetBytes("config"));
+                    tcpConnect.Send(Encoding.UTF8.GetBytes("config"));
                 }
                 else
                 {
-                    listener.Send(Encoding.UTF8.GetBytes("cmd"));
+                    tcpConnect.Send(Encoding.UTF8.GetBytes("cmd"));
+                }
+            }
+        }
+
+        static void GetContent(Socket socket, int configN, int configL)
+        {
+            socket.Send(Encoding.UTF8.GetBytes("start get content"));
+            string[] story = History.Speak(configN, configL);
+            int i = 0;
+            while (true)
+            {
+                if (i == story.Length)
+                {
+                    i = 0;
+                    story = History.Speak(configN, configL);
+                }
+
+                string firstMessage = Listener(socket);
+                Console.WriteLine(firstMessage);
+
+                if (firstMessage == "start")
+                {
+                    socket.Send(Encoding.UTF8.GetBytes(story[i]));
+                    i++;
+                }
+                else if (firstMessage == "close")
+                {
+                    Disconnect(socket);
+                    break;
+                }
+                else if (firstMessage == "stop")
+                {
+                    socket.Send(Encoding.UTF8.GetBytes("stop get content"));
+                    break;
+                }
+                else
+                {
+                    socket.Send(Encoding.UTF8.GetBytes("cmd"));
                 }
             }
         }
@@ -108,5 +147,10 @@ namespace tcpServer
             return data.ToString();
         }
 
+        private static void Disconnect(Socket socket)
+        {
+            socket.Send(Encoding.UTF8.GetBytes("close"));
+            socket.Shutdown(SocketShutdown.Both);
+        }
     }
 }

@@ -28,9 +28,7 @@ namespace ML_UI_App
                 {
                     ConService.Connect();
                     MessageBox.Show("Успешное подключение к серверу", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
-                    IsConnect = true;
-                    connectButton.Content = "Отключиться";
-                    // TODO: Вынести подключение в метод и добавить отправку конфигурации
+                    ConnectToServer();
                 }
                 else
                 {
@@ -48,8 +46,7 @@ namespace ML_UI_App
                 {
                     IsLogin = true;
                     MessageBox.Show("Авторизация прошла успешно.\nСоединение с сервером установлено.", "auth", MessageBoxButton.OK, MessageBoxImage.Information);
-                    IsConnect = true;
-                    connectButton.Content = "Отключиться";
+                    ConnectToServer();
                 }
                 else
                 {
@@ -82,6 +79,13 @@ namespace ML_UI_App
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             ConService.Disconnect();
+        }
+
+        private void ConnectToServer()
+        {
+            IsConnect = true;
+            connectButton.Content = "Отключиться";
+            Configurator.ReadFile();
         }
     }
 }

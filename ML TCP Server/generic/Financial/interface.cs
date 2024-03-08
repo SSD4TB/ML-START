@@ -2,23 +2,23 @@
 {
     interface IFinancialOperation
     {
-        void BuyStock(IFoundOperation foundOperation, IPopularityMod popularityMod);
-        void SellStock(IFoundOperation foundOperation, IPopularityMod popularityMod);
-        void ExchangeMoney(IFoundOperation foundOperation);
+        string BuyStock(IFoundOperation foundOperation, IPopularityMod popularityMod);
+        string SellStock(IFoundOperation foundOperation, IPopularityMod popularityMod);
+        string ExchangeMoney(IFoundOperation foundOperation);
     }
 
     interface IPopularityMod
     {
-        void UpPopularity();
+       void UpPopularity();
        int ReturnLevel();
     }
 
     interface IFoundOperation
     {
-        void BuyStockByPerson(int count, string name, IPopularityMod popularityMod);
-        void SellStockByPerson(int count, string name, IPopularityMod popularityMod);
-        void SellStockToStack(IPopularityMod popularityMod);
-        void ExchangeMoney(string name);
+        string BuyStockByPerson(int count, string name, IPopularityMod popularityMod);
+        string SellStockByPerson(int count, string name, IPopularityMod popularityMod);
+        string SellStockToStack(IPopularityMod popularityMod);
+        string ExchangeMoney(string name);
     }
 }
 

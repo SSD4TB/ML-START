@@ -9,7 +9,6 @@ namespace ML_UI_App.ConnectionService
     /// </summary>
     internal class ConService
     {
-        // TODO: Реализовать подключение к серверу через конфигурацию/UI приложение
         private static readonly string _ip = "127.0.0.1";
         private static readonly int _port = 8080;
         public static Socket tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -37,6 +36,8 @@ namespace ML_UI_App.ConnectionService
 
         public static void SendConfiguration(int n, int l)
         {
+            tcpClient.Send(Encoding.UTF8.GetBytes("config"));
+            Listener(tcpClient);
             tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
         }
 

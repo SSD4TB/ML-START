@@ -6,9 +6,9 @@ namespace Generic.Num
 {
     internal class GenericNum
     {
-        public static double GetGenericNum()
+        public static double GetGenericNum(int n, int l)
         {
-            Random rnd = new Random();
+            Random rnd = new();
 
             int[] firstArray = Enumerable.Range(5, 15).Where(x => x % 2 != 0).ToArray();
             double[] secondArray = new double[13];
@@ -49,29 +49,9 @@ namespace Generic.Num
                     }
                 }
             }
-
-            string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string filePath = Path.Combine(currentDirectory, "config.txt");
-            Logger.LogByTemplate(Debug,
-                note: "Checking and configuring file ");
-            Logger.LogByTemplate(Information,
-                note: $"Config file path: {filePath}");
-
-            if (!File.Exists(filePath))
-            {
-                Logger.LogByTemplate(Debug,
-                    note: "Config file not found, creating with default content ");
-                string userConfig = "7 5";
-                File.WriteAllText(filePath, userConfig);
-            }
-
-            string fileContent = File.ReadAllText(filePath);
-            int n, l;
+            
             try
             {
-                n = int.Parse(fileContent.Split()[0]);
-                l = int.Parse(fileContent.Split()[1]);
-
                 double[] firstNumber = Enumerable.Range(0, mathArray.GetLength(1)).Select(col => mathArray[n % 8, col]).ToArray();
                 double[] secondNumber = Enumerable.Range(0, mathArray.GetLength(0)).Select(row => mathArray[row, l % 13]).ToArray();
 
@@ -84,19 +64,16 @@ namespace Generic.Num
                 {
                     Logger.LogByTemplate(Warning,
                         note: $"The calculated result is not a valid number. answer = {answer} REPEAT.");
-                    return GetGenericNum();
+                    return GetGenericNum(n, l);
                 }
+                Log.CloseAndFlush();
                 return answer;
             }
             catch (Exception ex)
             {
                 Logger.LogByTemplate(Error,
                     ex, $"Parsing failed. Invalid format in config file.");
-                return GetGenericNum();
-            }
-            finally
-            {
-                Log.CloseAndFlush();
+                return GetGenericNum(n, l);
             }
         }
     }

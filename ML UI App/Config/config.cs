@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using ML_UI_App.ConnectionService
+using ML_UI_App.ConnectionService;
 
 namespace ML_UI_App.Config
 {
@@ -20,7 +20,7 @@ namespace ML_UI_App.Config
             filestream.Close();
         }
 
-        public static async Task ReadFile(Socket socket)
+        public static async Task ReadFile()
         {
             FileStream? filestream;
 
