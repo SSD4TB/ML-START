@@ -7,14 +7,14 @@ namespace ML_UI_App
     /// <summary>
     /// Логика взаимодействия для reg.xaml
     /// </summary>
-    public partial class Reg : Window
+    public partial class RegistrationWindow : Window
     {
-        public Reg()
+        public RegistrationWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Reg(object sender, RoutedEventArgs e)
+        private void Button_SignUp(object sender, RoutedEventArgs e)
         {
             if (Password != "" && UserLogin != "" && Password == PasswordRepeat)
             {

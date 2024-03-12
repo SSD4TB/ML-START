@@ -49,7 +49,7 @@ namespace Generic.Num
                     }
                 }
             }
-            
+
             try
             {
                 double[] firstNumber = Enumerable.Range(0, mathArray.GetLength(1)).Select(col => mathArray[n % 8, col]).ToArray();
@@ -58,7 +58,7 @@ namespace Generic.Num
                 double checkFirst = firstNumber.Min();
                 double checkSecond = secondNumber.Average();
 
-                var answer = (Math.Round((firstNumber.Min() + secondNumber.Average()), 4));
+                double answer = (Math.Round((firstNumber.Min() + secondNumber.Average()), 4));
 
                 if (double.IsNaN(answer))
                 {

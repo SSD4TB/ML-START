@@ -13,8 +13,8 @@ namespace tcpServer
         {
             const string ip = "127.0.0.1";
             const int port = 8080;
-            IPEndPoint tcpEndPoint = new IPEndPoint(IPAddress.Parse(ip), port);
-            var tcpSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            IPEndPoint tcpEndPoint = new(IPAddress.Parse(ip), port);
+            Socket tcpSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
             try
             {
@@ -68,7 +68,7 @@ namespace tcpServer
                 else if (firstMessage == "config")
                 {
                     tcpConnect.Send(Encoding.UTF8.GetBytes("config"));
-                    var tempConfig = Listener(tcpConnect).Split();
+                    string[] tempConfig = Listener(tcpConnect).Split();
                     clientConfig.N = int.Parse(tempConfig[0]);
                     clientConfig.L = int.Parse(tempConfig[1]);
                     tcpConnect.Send(Encoding.UTF8.GetBytes("config"));
@@ -135,12 +135,11 @@ namespace tcpServer
         static string Listener(Socket listener)
         {
             var buffer = new byte[256];
-            var size = 0;
             var data = new StringBuilder();
 
             do
             {
-                size = listener.Receive(buffer); // получение данных, в size количество реально полученных байт
+                int size = listener.Receive(buffer);
                 data.Append(Encoding.UTF8.GetString(buffer, 0, size));
             } while (listener.Available > 0);
 

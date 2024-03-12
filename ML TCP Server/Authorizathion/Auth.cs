@@ -18,33 +18,35 @@ namespace TCPServer.Authorizathion
             string queryString = $"SELECT password FROM userAuth WHERE userLogin=@userlogin;";
             string? value;
 
-            using (SqlConnection sqlConnection = new SqlConnection(connectionString))
+            SqlConnection sqlConnection = new(connectionString);
+            await sqlConnection.OpenAsync();
+
+            SqlCommand command = new(queryString, sqlConnection);
+            SqlParameter userParam = new("@userlogin", username);
+            command.Parameters.Add(userParam);
+
+            SqlDataReader reader = await command.ExecuteReaderAsync();
+
+            if (reader.HasRows)
             {
-                await sqlConnection.OpenAsync();
-
-                SqlCommand command = new SqlCommand(queryString, sqlConnection);
-                SqlParameter userParam = new SqlParameter("@userlogin", username);
-                command.Parameters.Add(userParam);
-
-                SqlDataReader reader = await command.ExecuteReaderAsync();
-
-                if (reader.HasRows)
+                while (await reader.ReadAsync())
                 {
-                    while (await reader.ReadAsync())
+                    value = reader.GetValue(0).ToString();
+                    if (value == ToHex(password))
                     {
-                        value = reader.GetValue(0).ToString();
-                        if (value == ToHex(password))
-                        {
-                            sender.Send(Encoding.UTF8.GetBytes("true"));
-                        }
-                        else
-                        {
-                            sender.Send(Encoding.UTF8.GetBytes("false"));
-                        }
+                        sender.Send(Encoding.UTF8.GetBytes("true"));
+                    }
+                    else
+                    {
+                        sender.Send(Encoding.UTF8.GetBytes("FALSE PASSWORD"));
                     }
                 }
-                await sqlConnection.CloseAsync();
             }
+            else
+            {
+                sender.Send(Encoding.UTF8.GetBytes("FALSE USER"));
+            }
+            await sqlConnection.CloseAsync();
         }
         
         public static async Task Registration(Socket sender, string username, string userpass)
@@ -53,14 +55,14 @@ namespace TCPServer.Authorizathion
             string insertString = $"INSERT INTO userAuth VALUES (@userlogin, @password);";
             string selectString = $"SELECT count(*) FROM userAuth WHERE userLogin=@userlogin;";
 
-            SqlParameter userlogin = new SqlParameter("@userlogin", username);
-            SqlParameter userlog = new SqlParameter("@userlogin", username);
-            SqlParameter password = new SqlParameter("@password", ToHex(userpass));
+            SqlParameter userlogin = new("@userlogin", username);
+            SqlParameter userlog = new("@userlogin", username);
+            SqlParameter password = new("@password", ToHex(userpass));
 
-            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            SqlConnection sqlConnection = new(connectionString);
             await sqlConnection.OpenAsync();
 
-            SqlCommand command = new SqlCommand(selectString, sqlConnection);
+            SqlCommand command = new(selectString, sqlConnection);
             command.Parameters.Add(userlogin);
 
             SqlDataReader reader = await command.ExecuteReaderAsync();
@@ -71,7 +73,7 @@ namespace TCPServer.Authorizathion
                 if (reader.GetInt32(0) == 0)
                 {
                     await reader.CloseAsync();
-                    SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                    SqlCommand insertCommand = new(insertString, sqlConnection);
                     insertCommand.Parameters.Add(userlog);
                     insertCommand.Parameters.Add(password);
                     insertCommand.ExecuteNonQuery();
@@ -85,7 +87,7 @@ namespace TCPServer.Authorizathion
             }
             else
             {
-                SqlCommand insertCommand = new SqlCommand(insertString, sqlConnection);
+                SqlCommand insertCommand = new(insertString, sqlConnection);
                 insertCommand.Parameters.Add(userlogin);
                 insertCommand.Parameters.Add(password);
                 insertCommand.ExecuteNonQuery();

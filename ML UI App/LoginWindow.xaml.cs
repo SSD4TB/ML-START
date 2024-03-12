@@ -6,14 +6,14 @@ namespace ML_UI_App
     /// <summary>
     /// Логика взаимодействия для reg.xaml
     /// </summary>
-    public partial class Log : Window
+    public partial class LoginWindow : Window
     {
-        public Log()
+        public LoginWindow()
         {
             InitializeComponent();
         }
 
-        private void Button_Log(object sender, RoutedEventArgs e)
+        private void Button_SignIn(object sender, RoutedEventArgs e)
         {
             if (UserLogin != "" && Password != "")
             {
@@ -33,9 +33,9 @@ namespace ML_UI_App
             }
         }
 
-        private void Button_Reg(object sender, RoutedEventArgs e)
+        private void Button_SignUp(object sender, RoutedEventArgs e)
         {
-            var regwindow = new Reg();
+            var regwindow = new RegistrationWindow();
             regwindow.ShowDialog();
         }
         

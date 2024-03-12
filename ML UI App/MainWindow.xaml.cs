@@ -1,7 +1,10 @@
-﻿using ML_UI_App.ConnectionService;
+﻿using Microsoft.VisualBasic;
 using ML_UI_App.Config;
+using ML_UI_App.ConnectionService;
+using ML_UI_App.LogService;
+using Serilog.Events;
+using System;
 using System.Windows;
-using System.Threading.Tasks;
 
 namespace ML_UI_App
 {
@@ -10,15 +13,24 @@ namespace ML_UI_App
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool IsLogin = false;
-        private bool IsConnect = false;
         public MainWindow()
         {
             InitializeComponent();
+            Logger.CreateLogDirectory(
+                LogEventLevel.Debug,
+                LogEventLevel.Information,
+                LogEventLevel.Warning,
+                LogEventLevel.Error
+            );
+            Closing += MainWindow_Closing;
         }
+
+        private bool IsLogin = false;
+        private bool IsConnect = false;
+
         private void Button_DeleteDB(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("скоро эта кнопка совершит величайший прикол =)");
+            //MessageBox.Show("скоро эта кнопка совершит величайший прикол =)");
         }
 
         private void Button_Connect(object sender, RoutedEventArgs e)
@@ -27,9 +39,16 @@ namespace ML_UI_App
             {
                 if (!IsConnect)
                 {
-                    ConService.Connect();
-                    MessageBox.Show("Успешное подключение к серверу", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
-                    ConnectToServer();
+                    try
+                    {
+                        ConService.Connect();
+                        MessageBox.Show("Успешное подключение к серверу", "connection", MessageBoxButton.OK, MessageBoxImage.Information);
+                        ConnectToServer();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Ошибка подключенияя к серверу.", "connection", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
                 }
                 else
                 {
@@ -42,7 +61,7 @@ namespace ML_UI_App
             else
             {
                 ConService.Connect();
-                Log logwindow = new();
+                LoginWindow logwindow = new();
                 if (logwindow.ShowDialog() == true)
                 {
                     IsLogin = true;
@@ -59,7 +78,16 @@ namespace ML_UI_App
 
         private async void Button_Start(object sender, RoutedEventArgs e)
         {
-            await ConService.GetHistory(StoryList);
+            if (IsConnect)
+            {
+                await ConService.GetHistory(StoryList);
+                Logger.LogByTemplate(LogEventLevel.Information, note:"Отправлен запрос на получение лора Незнайки.");
+            }
+            else
+            {
+                MessageBox.Show("Подключитесь к серверу перед получением сообщений.", "conservice", MessageBoxButton.OK, MessageBoxImage.Warning);
+                Logger.LogByTemplate(LogEventLevel.Warning, note:"Попытка отправки запроса на получение лора Незнайки без подключения к серверу.");
+            }
         }
 
         private void Button_Stop(object sender, RoutedEventArgs e)
@@ -67,17 +95,7 @@ namespace ML_UI_App
             ConService.StopHistory();
         }
 
-        private void TestCon_Click(object sender, RoutedEventArgs e)
-        {
-            //if (IsConnect)
-            //{
-            //    testTextBlock.Text = ConService.TestSendMessage();
-            //}
-
-            StoryList.Items.Add("kurwabober");
-        }
-
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             ConService.Disconnect();
         }

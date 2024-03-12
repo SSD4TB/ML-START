@@ -1,7 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using ML_UI_App.Config;
 
@@ -50,28 +52,36 @@ namespace ML_UI_App.ConnectionService
         {
             ContentFlag = true;
             string tempString;
-            tcpClient.Send(Encoding.UTF8.GetBytes("getcontent"));
-            Listener(tcpClient);
-            while (true)
+            try
             {
-                if (ContentFlag)
+                tcpClient.Send(Encoding.UTF8.GetBytes("getcontent"));
+                Listener(tcpClient);
+                while (true)
                 {
-                    tcpClient.Send(Encoding.UTF8.GetBytes("start"));
-                    tempString = Listener(tcpClient);
-                    if(tempString.Split()[0] == "Компания")
+                    if (ContentFlag)
                     {
-                        listbox.Items.Clear();
+                        tcpClient.Send(Encoding.UTF8.GetBytes("start"));
+                        tempString = Listener(tcpClient);
+                        if (tempString.Split()[0] == "Компания")
+                        {
+                            listbox.Items.Clear();
+                        }
+                        listbox.Items.Add(tempString);
                     }
-                    listbox.Items.Add(tempString);
+                    else
+                    {
+                        tcpClient.Send(Encoding.UTF8.GetBytes("stop"));
+                        Listener(tcpClient);
+                        break;
+                    }
+                    await Task.Delay(Configurator.ReadDelay());
                 }
-                else
-                {
-                    tcpClient.Send(Encoding.UTF8.GetBytes("stop"));
-                    Listener(tcpClient);
-                    break;
-                }
-                await Task.Delay(Configurator.ReadDelay());
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("kosyak");
+            }
+            
         }
 
         public static void StopHistory()
@@ -81,12 +91,11 @@ namespace ML_UI_App.ConnectionService
         public static string Listener(Socket listener)
         {
             var buffer = new byte[256];
-            var size = 0;
             var data = new StringBuilder();
 
             do
             {
-                size = listener.Receive(buffer);
+                int size = listener.Receive(buffer);
                 data.Append(Encoding.UTF8.GetString(buffer, 0, size));
             } while (listener.Available > 0);
 
