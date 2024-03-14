@@ -9,6 +9,12 @@ namespace TCPServer.Authorizathion
     {
         #region ConnectionDBString
         private static readonly string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""ML START"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        
+        private static async Task CheckDB()
+        {
+
+        }
+
         #endregion
 
         #region Authorization
@@ -19,7 +25,7 @@ namespace TCPServer.Authorizathion
             string? value;
 
             SqlConnection sqlConnection = new(connectionString);
-            await sqlConnection.OpenAsync();
+            sqlConnection.Open();
 
             SqlCommand command = new(queryString, sqlConnection);
             SqlParameter userParam = new("@userlogin", username);

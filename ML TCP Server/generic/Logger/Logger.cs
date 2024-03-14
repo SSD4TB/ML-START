@@ -13,7 +13,7 @@ namespace Generic.LogService
 
             if(ex != null)
             {
-                info.Append($"; {ex.Source}; {ex.GetType()}; error message: \"{ex.Message}\"");
+                info.Append($"; {ex.Source}; {ex.GetType()}; {ex.Message}");
             }
 
             Log.Write(logEventLevel, info.ToString());

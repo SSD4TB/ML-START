@@ -66,7 +66,6 @@ namespace Generic.Num
                         note: $"The calculated result is not a valid number. answer = {answer} REPEAT.");
                     return GetGenericNum(n, l);
                 }
-                Log.CloseAndFlush();
                 return answer;
             }
             catch (Exception ex)

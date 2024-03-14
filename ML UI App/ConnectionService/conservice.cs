@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Configuration;
 using System.Net.Sockets;
 using System.Text;
@@ -6,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using ML_UI_App.Config;
+using ML_UI_App.LogService;
+using Serilog.Events;
 
 namespace ML_UI_App.ConnectionService
 {
@@ -21,31 +24,43 @@ namespace ML_UI_App.ConnectionService
 
         public static void Connect()
         {
-            Task.Run(async() => await tcpClient.ConnectAsync(_ip, _port));
-        }
-
-        public static string TestSendMessage()
-        {
-            tcpClient.Send(Encoding.UTF8.GetBytes("message"));
-            return Listener(tcpClient);
+            tcpClient.Connect(_ip, _port);
+            Logger.LogByTemplate(LogEventLevel.Information, note:"Успешное подключение к серверу");
         }
 
         public static string Authorization(string operation, string user, string password)
         {
-            tcpClient.Send(Encoding.UTF8.GetBytes(operation));
-            Listener(tcpClient);
-            tcpClient.Send(Encoding.UTF8.GetBytes(user));
-            Listener(tcpClient);
-            tcpClient.Send(Encoding.UTF8.GetBytes(password));
-            return Listener(tcpClient);
+            try
+            {
+                tcpClient.Send(Encoding.UTF8.GetBytes(operation));
+                ListenServer(tcpClient);
+                tcpClient.Send(Encoding.UTF8.GetBytes(user));
+                ListenServer(tcpClient);
+                tcpClient.Send(Encoding.UTF8.GetBytes(password));
+                return ListenServer(tcpClient);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogByTemplate(LogEventLevel.Error, ex, "Ошибка отправки данных авторизации");
+                return "";
+            }
+            
         }
 
         public static void SendConfiguration(int n, int l)
         {
-            tcpClient.Send(Encoding.UTF8.GetBytes("config"));
-            Listener(tcpClient);
-            tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
-            Listener(tcpClient);
+            try
+            {
+                tcpClient.Send(Encoding.UTF8.GetBytes("config"));
+                ListenServer(tcpClient);
+                tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
+                ListenServer(tcpClient);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogByTemplate(LogEventLevel.Error, ex, "Ошибка отправки конфигурации.");
+            }
+            
         }
 
         public static async Task GetHistory(ListBox listbox)
@@ -55,13 +70,13 @@ namespace ML_UI_App.ConnectionService
             try
             {
                 tcpClient.Send(Encoding.UTF8.GetBytes("getcontent"));
-                Listener(tcpClient);
+                ListenServer(tcpClient);
                 while (true)
                 {
                     if (ContentFlag)
                     {
                         tcpClient.Send(Encoding.UTF8.GetBytes("start"));
-                        tempString = Listener(tcpClient);
+                        tempString = ListenServer(tcpClient);
                         if (tempString.Split()[0] == "Компания")
                         {
                             listbox.Items.Clear();
@@ -71,7 +86,7 @@ namespace ML_UI_App.ConnectionService
                     else
                     {
                         tcpClient.Send(Encoding.UTF8.GetBytes("stop"));
-                        Listener(tcpClient);
+                        ListenServer(tcpClient);
                         break;
                     }
                     await Task.Delay(Configurator.ReadDelay());
@@ -79,7 +94,7 @@ namespace ML_UI_App.ConnectionService
             }
             catch (Exception ex)
             {
-                MessageBox.Show("kosyak");
+                Logger.LogByTemplate(LogEventLevel.Warning, ex, "Ошибка передачи лора");
             }
             
         }
@@ -88,7 +103,7 @@ namespace ML_UI_App.ConnectionService
         {
             ContentFlag = false;
         }
-        public static string Listener(Socket listener)
+        public static string ListenServer(Socket listener)
         {
             var buffer = new byte[256];
             var data = new StringBuilder();
@@ -100,14 +115,26 @@ namespace ML_UI_App.ConnectionService
             } while (listener.Available > 0);
 
             return data.ToString();
+            
         }
 
         public static void Disconnect()
         {
-            tcpClient.Send(Encoding.UTF8.GetBytes("close"));
-            tcpClient.Shutdown(SocketShutdown.Both);
-            tcpClient.Close();
-            tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            try
+            {
+                tcpClient.Send(Encoding.UTF8.GetBytes("close"));
+                tcpClient.Shutdown(SocketShutdown.Both);
+                tcpClient.Close();
+                Logger.LogByTemplate(LogEventLevel.Information, note:"Успешное отключение от сервера.");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogByTemplate(LogEventLevel.Warning, ex, "Попытка отключиться от сервера без наличия соединения");
+            }
+            finally
+            {
+                tcpClient = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            }
         }
     }
 }

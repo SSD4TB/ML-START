@@ -24,7 +24,7 @@ namespace ML_UI_App
                 }
                 else
                 {
-                    MessageBox.Show($"Ошибка авторизации.\nБолее подробная информация будет в следующей версии\n{answer}", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"Ошибка авторизации.\nБолее подробная информация будет в следующей версии.", "Авторизация", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
             else
