@@ -11,7 +11,7 @@ namespace Generic.LogService
             StringBuilder info = new();
             info.Append(note);
 
-            if(ex != null)
+            if (ex != null)
             {
                 info.Append($"; {ex.Source}; {ex.GetType()}; {ex.Message}");
             }
@@ -21,7 +21,7 @@ namespace Generic.LogService
 
         public static void CreateLogDirectory(params LogEventLevel[] logEventLevels)
         {
-            string currentDate = DateTime.Now.Date.ToShortDateString();
+            string currentDate = DateTime.Now.ToString("yyyy/MM/dd");
 
             if (!Directory.Exists("logs") || !Directory.Exists(currentDate))
             {
@@ -35,7 +35,7 @@ namespace Generic.LogService
                 logName = logEventLevel.ToString().ToLower() + "Log";
                 loggerConfig.WriteTo.Logger(lc => lc
                 .Filter.ByIncludingOnly(evt => evt.Level == logEventLevel)
-                .WriteTo.File($@"logs\{logName}.txt"));
+                .WriteTo.File($@"log\{currentDate}\{logName}.txt"));
             };
             Log.Logger = loggerConfig.CreateLogger();
 

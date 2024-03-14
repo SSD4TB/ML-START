@@ -16,7 +16,6 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Logger.CreateLogDirectory(
-            LogEventLevel.Debug,
             LogEventLevel.Information,
             LogEventLevel.Warning,
             LogEventLevel.Error

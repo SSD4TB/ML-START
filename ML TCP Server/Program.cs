@@ -1,4 +1,7 @@
-﻿using ML_TCP_Server.HostService;
+﻿using Generic.LogService;
+using ML_TCP_Server.HostService;
+using TCPServer.Authorizathion;
+using Serilog.Events;
 
 namespace tcpServer
 {
@@ -6,6 +9,11 @@ namespace tcpServer
     {
         static async Task Main(string[] args)
         {
+            Logger.CreateLogDirectory(
+                LogEventLevel.Information,
+                LogEventLevel.Warning,
+                LogEventLevel.Error
+                );
             await HostServer.RunHost();
         }
     }

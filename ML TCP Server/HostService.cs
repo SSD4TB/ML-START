@@ -18,6 +18,7 @@ namespace ML_TCP_Server.HostService
 
         public static async Task RunHost()
         {
+            Auth.CheckDB();
             try
             {
                 tcpSocket.Bind(tcpEndPoint);
@@ -46,7 +47,7 @@ namespace ML_TCP_Server.HostService
 
         static async Task ProcessClient(Socket tcpConnect)
         {
-            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} подключился к серверу.");
+            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправил запрос на подключение к серверу.");
             ClientConfiguration clientConfig = new();
 
             while (true)

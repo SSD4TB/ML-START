@@ -1,4 +1,6 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Generic.LogService;
+using Microsoft.Data.SqlClient;
+using Serilog.Events;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
@@ -7,12 +9,45 @@ namespace TCPServer.Authorizathion
 {
     internal class Auth
     {
-        #region ConnectionDBString
-        private static readonly string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""ML START"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        #region ConnectionDB
+        public static string nameDB = "ML START";
+        private static readonly string conStringForDBCreate = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private static readonly string connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""{nameDB}"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         
-        private static async Task CheckDB()
+        public static void CheckDB()
         {
+            try
+            {
+                using SqlConnection sqlConnection = new(conStringForDBCreate);
+                sqlConnection.Open();
+                SqlCommand sqlCommand = new($"CREATE DATABASE [{nameDB}]", sqlConnection);
+                sqlCommand.ExecuteNonQuery();
+                Logger.LogByTemplate(LogEventLevel.Warning, note: "База данных не обнаружена. Создание нового экземпляра БД");
+                sqlConnection.Close();
+            }
+            catch
+            {
+                Logger.LogByTemplate(LogEventLevel.Information, note:"База данных существует");
+            }
+            CheckDBTable();
+        }
 
+        //TODO: Решить, что делать с методом CheckDBTable
+        private static void CheckDBTable()
+        {
+            try
+            {
+                using SqlConnection sqlConnection = new(connectionString);
+                sqlConnection.Open();
+                SqlCommand sqlCommand = new("CREATE TABLE userAuth (userLogin VARCHAR(255) PRIMARY KEY NOT NULL, password VARCHAR(255) NOT NULL)", sqlConnection);
+                sqlCommand.ExecuteNonQuery();
+                Logger.LogByTemplate(LogEventLevel.Information, note: "Таблица авторизации отсутствовала в базе данных, её создание прошло успешно");
+                sqlConnection.Close();
+            }
+            catch
+            {
+                Logger.LogByTemplate(LogEventLevel.Information, note: "Таблица авторизации существует в базе данных");
+            }
         }
 
         #endregion
