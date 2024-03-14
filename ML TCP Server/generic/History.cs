@@ -9,13 +9,6 @@ namespace Generic.History
     {
         public static string[] Speak(int n, int l)
         {
-            //Logger.CreateLogDirectory(
-            //    Debug,
-            //    Information,
-            //    Warning,
-            //    Error
-            //    );
-
             double course = GenericNum.GetGenericNum(n, l);
             while (course < 0)
             {
@@ -39,6 +32,7 @@ namespace Generic.History
             }
             tempString += "=" + bank.SellAllStocks(company);
 
+            Logger.LogByTemplate(Information, note:"Пакет лора незнайки сгенерирован и готов к отправке");
             return tempString.Split("=");
         }
     }

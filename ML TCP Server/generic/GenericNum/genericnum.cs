@@ -1,9 +1,9 @@
 ﻿using Generic.LogService;
-using Serilog;
 using static Serilog.Events.LogEventLevel;
 
 namespace Generic.Num
 {
+    #region Calculate Num
     internal class GenericNum
     {
         public static double GetGenericNum(int n, int l)
@@ -18,10 +18,9 @@ namespace Generic.Num
             {
                 double tempVal = rnd.NextDouble() * (15.0 - (-12.0)) + (-12.0);
                 secondArray[i] = tempVal;
-                Logger.LogByTemplate(Debug, note: $"X array index {i} = {secondArray[i]} ");
             }
 
-            Logger.LogByTemplate(Information, note: "Application started ");
+            Logger.LogByTemplate(Information, note: "Запущены вычисления особого числа");
 
             for (int i = 0; i < firstArray.Length; i++)
             {
@@ -50,30 +49,22 @@ namespace Generic.Num
                 }
             }
 
-            try
+            double[] firstNumber = Enumerable.Range(0, mathArray.GetLength(1)).Select(col => mathArray[n % 8, col]).ToArray();
+            double[] secondNumber = Enumerable.Range(0, mathArray.GetLength(0)).Select(row => mathArray[row, l % 13]).ToArray();
+
+            double checkFirst = firstNumber.Min();
+            double checkSecond = secondNumber.Average();
+
+            double answer = (Math.Round((firstNumber.Min() + secondNumber.Average()), 4));
+
+            if (double.IsNaN(answer))
             {
-                double[] firstNumber = Enumerable.Range(0, mathArray.GetLength(1)).Select(col => mathArray[n % 8, col]).ToArray();
-                double[] secondNumber = Enumerable.Range(0, mathArray.GetLength(0)).Select(row => mathArray[row, l % 13]).ToArray();
-
-                double checkFirst = firstNumber.Min();
-                double checkSecond = secondNumber.Average();
-
-                double answer = (Math.Round((firstNumber.Min() + secondNumber.Average()), 4));
-
-                if (double.IsNaN(answer))
-                {
-                    Logger.LogByTemplate(Warning,
-                        note: $"The calculated result is not a valid number. answer = {answer} REPEAT.");
-                    return GetGenericNum(n, l);
-                }
-                return answer;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogByTemplate(Error,
-                    ex, $"Parsing failed. Invalid format in config file.");
+                Logger.LogByTemplate(Warning,
+                    note: $"Вычисления привели к ошибке в выходном ответе. Результат = {answer}; Генерация числа запускается заново.");
                 return GetGenericNum(n, l);
             }
+            return answer;
         }
     }
+    #endregion
 }
