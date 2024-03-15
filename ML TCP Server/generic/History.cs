@@ -9,11 +9,7 @@ namespace Generic.History
     {
         public static string[] Speak(int n, int l)
         {
-            double course = GenericNum.GetGenericNum(n, l);
-            while (course < 0)
-            {
-                course = GenericNum.GetGenericNum(n, l);
-            }
+            double course = Math.Abs(GenericNum.GetGenericNum(n, l));
 
             Company company = new("Компания");
             Bank bank = new(course);

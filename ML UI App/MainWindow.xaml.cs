@@ -26,9 +26,9 @@ public partial class MainWindow : Window
     private bool IsLogin = false;
     private bool IsConnect = false;
 
-    private void Button_DeleteDB(object sender, RoutedEventArgs e)
+    private void Button_Configuration(object sender, RoutedEventArgs e)
     {
-
+        ;
     }
 
     private void Button_Connect(object sender, RoutedEventArgs e)

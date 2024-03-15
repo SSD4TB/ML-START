@@ -17,7 +17,7 @@
             <ColumnDefinition Width="23*"/>
         </Grid.ColumnDefinitions>
         <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Text="знайка?" Height="43" Width="200" FontSize="40" FontFamily="Trebuchet MS" Margin="7,44,0,0"/>
-        <Button Content="Ну клики меня)" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top" Width="164" Click="Button_DeleteDB" RenderTransformOrigin="0.492,0.509" Height="20"/>
+        <Button Content="Конфигурация" HorizontalAlignment="Left" Margin="10,158,0,0" VerticalAlignment="Top" Width="164" Click="Button_Configuration" RenderTransformOrigin="0.492,0.509" Height="20"/>
         <Border BorderBrush="Black" BorderThickness="2,2,2,2" Grid.ColumnSpan="2" Margin="212,0,16,0">
             <ListBox Name="StoryList"/>
 

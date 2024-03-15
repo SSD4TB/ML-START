@@ -28,7 +28,7 @@ namespace ML_TCP_Server.HostService
             {
                 tcpSocket.Bind(tcpEndPoint);
                 tcpSocket.Listen();
-                Console.WriteLine("Сервер запущен. Ожидание подключений... ");
+                WriteToConsole("Сервер запущен. Ожидание подключений... ");
 
                 while (true)
                 {
@@ -46,20 +46,20 @@ namespace ML_TCP_Server.HostService
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                WriteToConsole(ex.Message);
             }
         }
 
         static async Task ProcessClient(Socket tcpConnect)
         {
-            Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправил запрос на подключение к серверу.");
+            WriteToConsole($"Клиент {tcpConnect.RemoteEndPoint} отправил запрос на подключение к серверу.");
             ClientConfiguration clientConfig = new();
             Logger.LogByTemplate(Information, note:$"По адресу {tcpConnect.RemoteEndPoint} был подключен клиент");
 
             while (true)
             {
                 string command = ListenClient(tcpConnect);
-                Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {command}.");
+                WriteToConsole($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {command}.");
                 Logger.LogByTemplate(Information, note:$"{tcpConnect.RemoteEndPoint}: отправлена команда {command}");
                 
 
@@ -69,12 +69,12 @@ namespace ML_TCP_Server.HostService
                 }
                 else if (command == "getcontent")
                 {
-                    GetContent(tcpConnect, clientConfig.N, clientConfig.L);
                     Logger.LogByTemplate(Information, note: $"{tcpConnect.RemoteEndPoint}: отправлен запрос на получение лора незнайки");
+                    GetContent(tcpConnect, clientConfig.N, clientConfig.L);
                 }
                 else if (command == "close")
                 {
-                    Console.WriteLine($"Клиент {tcpConnect.RemoteEndPoint} отключился от сервера.");
+                    WriteToConsole($"Клиент {tcpConnect.RemoteEndPoint} отключился от сервера.");
                     Logger.LogByTemplate(Information, note: $"{tcpConnect.RemoteEndPoint}: закрывает соединение");
                     tcpConnect.Shutdown(SocketShutdown.Both);
                 }
@@ -122,7 +122,7 @@ namespace ML_TCP_Server.HostService
                 else if (firstMessage == "stop")
                 {
                     socket.Send(Encoding.UTF8.GetBytes("stop get content"));
-                    Console.WriteLine($"Клиент {socket.RemoteEndPoint} отправляет команду stop.");
+                    WriteToConsole($"Клиент {socket.RemoteEndPoint} отправляет команду stop.");
                     break;
                 }
                 else
@@ -165,6 +165,11 @@ namespace ML_TCP_Server.HostService
             } while (listener.Available > 0);
 
             return data.ToString();
+        }
+
+        private static void WriteToConsole(string message)
+        {
+            Console.WriteLine($"[{DateTime.Now}]: {message}");
         }
 
         private static void Disconnect(Socket socket)
