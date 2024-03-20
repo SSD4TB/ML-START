@@ -18,7 +18,7 @@ namespace ML_UI_App.ConnectionService
     internal class ConService
     {
         private static readonly string _ip = "127.0.0.1";
-        private static readonly int _port = 8080;
+        private static readonly int _port = 9090;
         public static Socket tcpClient = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private static bool ContentFlag = false;
 
@@ -47,13 +47,13 @@ namespace ML_UI_App.ConnectionService
             
         }
 
-        public static void SendConfiguration(int n, int l)
+        public static void SendConfiguration()
         {
             try
             {
                 tcpClient.Send(Encoding.UTF8.GetBytes("config"));
                 ListenServer(tcpClient);
-                tcpClient.Send(Encoding.UTF8.GetBytes($"{n} {l}"));
+                tcpClient.Send(Encoding.UTF8.GetBytes($"{Configurator.clientConfig.N} {Configurator.clientConfig.L}"));
                 ListenServer(tcpClient);
             }
             catch (Exception ex)
@@ -89,7 +89,7 @@ namespace ML_UI_App.ConnectionService
                         ListenServer(tcpClient);
                         break;
                     }
-                    await Task.Delay(Configurator.ReadDelay());
+                    await Task.Delay(Configurator.clientConfig.Delay);
                 }
             }
             catch (Exception ex)

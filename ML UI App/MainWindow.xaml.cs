@@ -21,14 +21,16 @@ public partial class MainWindow : Window
             LogEventLevel.Error
         );
         Closing += MainWindow_Closing;
+        Configurator.ReadConfig();
     }
 
-    private bool IsLogin = false;
+    private bool IsLogin = true;
     private bool IsConnect = false;
 
     private void Button_Configuration(object sender, RoutedEventArgs e)
     {
-        ;
+        SetConfigWindow setConfigWindow = new();
+        setConfigWindow.Show();
     }
 
     private void Button_Connect(object sender, RoutedEventArgs e)
@@ -111,10 +113,10 @@ public partial class MainWindow : Window
         Logger.LogByTemplate(LogEventLevel.Information, note:"Закрытие программы");
     }
 
-    private void ConnectToServer()
+    private async void ConnectToServer()
     {
         IsConnect = true;
         connectButton.Content = "Отключиться";
-        Configurator.ReadFile();
+        ConService.SendConfiguration();
     }
 }

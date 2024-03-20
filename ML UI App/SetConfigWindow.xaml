@@ -11,9 +11,9 @@
         <TextBlock HorizontalAlignment="Left" Margin="140,160,0,0" TextWrapping="Wrap" Text="Число N" FontSize="20" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="140,200,0,0" TextWrapping="Wrap" Text="Число L" FontSize="20" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="140,240,0,0" TextWrapping="Wrap" Text="Задержка" FontSize="20" VerticalAlignment="Top"/>
-        <TextBox Name="textBoxNumN"  HorizontalAlignment="Left" Margin="280,164,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="190" Height="23"/>
-        <TextBox Name="textBoxNumL" HorizontalAlignment="Left" Margin="280,0,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" Width="190" Height="23"/>
-        <TextBox Name="textBoxDelay" HorizontalAlignment="Left" Margin="280,244,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="190" Height="23"/>
+        <TextBox Name="textBoxNumN"  HorizontalAlignment="Left" Margin="280,164,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Height="23"/>
+        <TextBox Name="textBoxNumL" HorizontalAlignment="Left" Margin="280,0,0,0" TextWrapping="Wrap" VerticalAlignment="Center" Width="190" Height="23"/>
+        <TextBox Name="textBoxDelay" HorizontalAlignment="Left" Margin="280,244,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="190" Height="23"/>
         <Button Content="Применить" FontSize="20" HorizontalAlignment="Left" Margin="140,288,0,0" VerticalAlignment="Top" Height="42" Width="330" Click="Button_SetConfigure"/>
 
     </Grid>

@@ -10,13 +10,18 @@ namespace TCPServer.Authorizathion
     internal class Auth
     {
         #region Fields
-        //TODO: Перенести nameDB в конфигурацию
-        public static string nameDB = "ML START";
+        //TODO: connectionString из конфигурации или хардкод?
+        private static string nameDB = "ML START";
         private static readonly string conStringForDBCreate = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=master;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
-        private static readonly string connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""{nameDB}"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        private static string connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""{nameDB}"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         #endregion
 
         #region Public Methods
+        public static void SetConfig(string configDBName)
+        {
+            nameDB = configDBName;
+            connectionString = $@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=""{nameDB}"";Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        }
         public static void CheckDB()
         {
             try

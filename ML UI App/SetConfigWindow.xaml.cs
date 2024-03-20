@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ML_UI_App.Config;
+using ML_UI_App.LogService;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using static Serilog.Events.LogEventLevel;
 
 namespace ML_UI_App
 {
@@ -22,11 +14,24 @@ namespace ML_UI_App
         public SetConfigWindow()
         {
             InitializeComponent();
+            textBoxNumN.Text = $"{Configurator.clientConfig.N}";
+            textBoxNumL.Text = $"{Configurator.clientConfig.L}";
+            textBoxDelay.Text = $"{Configurator.clientConfig.Delay}";
         }
 
         private void Button_SetConfigure(object sender, RoutedEventArgs e)
         {
-            
+            try
+            {
+                Configurator.ChangeConfig(NumN, NumL, delay: Delay);
+                MessageBox.Show("Изменения сохранены.\nДля применения чисел N и L переподключитесь к серверу.", "config", MessageBoxButton.OK, MessageBoxImage.Information);
+                Logger.LogByTemplate(Information, note:$"Обновление конфигурации: установлены значения N={NumN}, L={NumL}, Задержка={Delay}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogByTemplate(Warning, ex, "");
+                MessageBox.Show("Проверьте правильность введённых данных.", "configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         public int NumN

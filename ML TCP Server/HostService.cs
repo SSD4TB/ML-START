@@ -13,22 +13,42 @@ namespace ML_TCP_Server.HostService
     {
         #region Fields
         //TODO: Вынести IP и port в конфигурацию
-        private static readonly string ip = "127.0.0.1";
-        private static readonly int port = 8080;
-        private static readonly IPEndPoint tcpEndPoint = new(IPAddress.Parse(ip), port);
-        private static readonly Socket tcpSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private static string ip = "127.0.0.1";
+        private static int port = 8080;
+        private static IPEndPoint tcpEndPoint = new(IPAddress.Parse(ip), port);
+        private static Socket tcpSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         #endregion
+
+        private static void SetConfig()
+        {
+            try
+            {
+                ServerConfiguration server = ServerConfigurator.GetConfig().Result;
+                ip = server.IP;
+                port = server.Port;
+                tcpEndPoint = new(IPAddress.Parse(ip), port);
+                tcpSocket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                Auth.SetConfig(server.NameDB);
+                Logger.LogByTemplate(Information, note:"Конфигурация применена.");
+            }
+            catch(Exception ex)
+            {
+                Logger.LogByTemplate(Warning, ex, "Использована стандартная конфигурация");
+            }
+        }
 
         #region Handler Methods
         public static async Task RunHost()
         {
-            //TODO: Сделать серверную конфигурацию
+            SetConfig();
             Auth.CheckDB();
+            WriteToConsole("Настройка параметров завершена, запуск сервера...");
+
             try
             {
                 tcpSocket.Bind(tcpEndPoint);
                 tcpSocket.Listen();
-                WriteToConsole("Сервер запущен. Ожидание подключений... ");
+                WriteToConsole($"Сервер запущен [{ip}:{port}]. Ожидание подключений... ");
 
                 while (true)
                 {
@@ -47,6 +67,7 @@ namespace ML_TCP_Server.HostService
             catch (Exception ex)
             {
                 WriteToConsole(ex.Message);
+                Logger.LogByTemplate(Error, ex);
             }
         }
 
@@ -56,7 +77,7 @@ namespace ML_TCP_Server.HostService
             ClientConfiguration clientConfig = new();
             Logger.LogByTemplate(Information, note:$"По адресу {tcpConnect.RemoteEndPoint} был подключен клиент");
 
-            while (true)
+            while (tcpConnect.Connected)
             {
                 string command = ListenClient(tcpConnect);
                 WriteToConsole($"Клиент {tcpConnect.RemoteEndPoint} отправляет команду {command}.");
@@ -116,7 +137,10 @@ namespace ML_TCP_Server.HostService
                 }
                 else if (firstMessage == "close")
                 {
-                    Disconnect(socket);
+                    WriteToConsole($"Клиент {socket.RemoteEndPoint} отключился от сервера.");
+                    socket.Send(Encoding.UTF8.GetBytes("close"));
+                    socket.Shutdown(SocketShutdown.Both);
+                    Logger.LogByTemplate(Information, note: $"{socket.RemoteEndPoint}: закрывает соединение при передаче лора");
                     break;
                 }
                 else if (firstMessage == "stop")
@@ -170,13 +194,6 @@ namespace ML_TCP_Server.HostService
         private static void WriteToConsole(string message)
         {
             Console.WriteLine($"[{DateTime.Now}]: {message}");
-        }
-
-        private static void Disconnect(Socket socket)
-        {
-            socket.Send(Encoding.UTF8.GetBytes("close"));
-            socket.Shutdown(SocketShutdown.Both);
-            Logger.LogByTemplate(Information, note: $"{socket.RemoteEndPoint}: закрывает соединение при передаче лора");
         }
         #endregion
     }
