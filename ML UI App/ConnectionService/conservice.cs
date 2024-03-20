@@ -1,14 +1,11 @@
-﻿using System;
-using System.CodeDom;
-using System.Configuration;
+﻿using ML_UI_App.Config;
+using ML_UI_App.LogService;
+using Serilog.Events;
+using System;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using ML_UI_App.Config;
-using ML_UI_App.LogService;
-using Serilog.Events;
 
 namespace ML_UI_App.ConnectionService
 {

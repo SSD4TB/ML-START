@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Text.Json;
 using System.Threading.Tasks;
-using ML_UI_App.ConnectionService;
 using ML_UI_App.LogService;
 using static Serilog.Events.LogEventLevel;
 
@@ -38,7 +37,6 @@ namespace ML_UI_App.Config
             try
             {
                 clientConfig = await JsonSerializer.DeserializeAsync<ClientConfig>(filestream);
-                Logger.LogByTemplate(Error, note:$"{clientConfig.L}, {clientConfig.N}");
             }
             catch (Exception ex)
             {
@@ -46,7 +44,7 @@ namespace ML_UI_App.Config
                 await ChangeConfig();
                 filestream = new FileStream(_configFileName, FileMode.Open);
                 clientConfig = await JsonSerializer.DeserializeAsync<ClientConfig>(filestream);
-                Logger.LogByTemplate(Error, ex, "Ошибка чтения конфигурации, сброс настроек до базовых");
+                Logger.LogByTemplate(Warning, ex, "Ошибка чтения конфигурации, сброс настроек до базовых");
             }
             Logger.LogByTemplate(Information, note: "Успешное чтение конфигурации");
             filestream.Close();

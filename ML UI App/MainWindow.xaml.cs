@@ -48,6 +48,7 @@ public partial class MainWindow : Window
                 catch (Exception ex)
                 {
                     MessageBox.Show("Ошибка подключенияя к серверу.", "connection", MessageBoxButton.OK, MessageBoxImage.Error);
+                    Logger.LogByTemplate(LogEventLevel.Error, ex, "Ошибка подключения к серверу");
                 }
             }
             else
