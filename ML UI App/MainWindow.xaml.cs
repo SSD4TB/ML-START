@@ -1,9 +1,11 @@
-﻿using ML_UI_App.Config;
+﻿using Microsoft.Win32;
+using ML_UI_App.Config;
 using ML_UI_App.ConnectionService;
 using ML_UI_App.LogService;
 using Serilog.Events;
 using System;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace ML_UI_App;
 
@@ -114,10 +116,32 @@ public partial class MainWindow : Window
         Logger.LogByTemplate(LogEventLevel.Information, note:"Закрытие программы");
     }
 
-    private async void ConnectToServer()
+    private void ConnectToServer()
     {
         IsConnect = true;
         connectButton.Content = "Отключиться";
         ConService.SendConfiguration();
+    }
+
+    private async void CheckImageButtonClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            OpenFileDialog openFileDialog = new()
+            {
+                Filter = "Image files (*.png;*.jpeg;*.jpg)|*.png;*.jpeg;*.jpg"
+            };
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Uri trueImageUrl = new(openFileDialog.FileName);
+                contentImage.Source = new BitmapImage(trueImageUrl);
+                var result = await HttpService.GetPictureJSONAsync(openFileDialog.FileName);
+                MessageBox.Show(result);
+            }
+        }
+        catch
+        {
+            MessageBox.Show("ploho delo");
+        }
     }
 }

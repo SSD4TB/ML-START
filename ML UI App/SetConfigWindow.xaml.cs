@@ -19,11 +19,11 @@ namespace ML_UI_App
             textBoxDelay.Text = $"{Configurator.clientConfig.Delay}";
         }
 
-        private void Button_SetConfigure(object sender, RoutedEventArgs e)
+        private async void Button_SetConfigure(object sender, RoutedEventArgs e)
         {
             try
             {
-                Configurator.ChangeConfig(NumN, NumL, delay: Delay);
+                await Configurator.ChangeConfig(NumN, NumL, delay: Delay);
                 MessageBox.Show("Изменения сохранены.\nДля применения чисел N и L переподключитесь к серверу.", "config", MessageBoxButton.OK, MessageBoxImage.Information);
                 Logger.LogByTemplate(Information, note:$"Обновление конфигурации: установлены значения N={NumN}, L={NumL}, Задержка={Delay}");
             }
